@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="boards">
+        <item name="سالن امتحانات">سالن امتحانات:سالن امتحانات</item>
+        <item name="سایت دانشکده">سایت دانشکده:سایت دانشکده</item>
+        <item name="شورای صنفی">شورای صنفی:شورای صنفی</item>
+        <item name="انجمن علمی">انجمن علمی:انجمن علمی</item>
+        <item name="درب ورودی">درب ورودی:درب ورودی</item>
+        <item name="کلاس 101">کلاس 101:کلاس 101</item>
+        <item name="کلاس 102">کلاس 102:کلاس 102</item>
+        <item name="راه پله">راه پله:راه پله</item>
+    </string-array>
+    <string-array name="destinations">
+        <item>سالن امتحانات</item>
+        <item>سایت دانشکده</item>
+        <item>شورای صنفی</item>
+        <item>درب ورودی</item>
+        <item>کلاس 201</item>
+        <item>کلاس 202</item>
+        <item>راه پله</item>
+        <item>انجمن علمی</item>
+        <item>آموزش دکترا</item>
+        <item>آموزش کارشناسی</item>
+        <item>سرویس بهداشتی آقایان</item>
+        <item>ازمایشگاه دکتر باقری</item>
+        <item>دفتر دکتر جوادی</item>
+        <item>دفتر دکتر فربه</item>
+    </string-array>
+
+    <string-array name="destinations2">
+        <item>درب حافظ</item>
+        <item>درب سعید</item>
+        <item>درب رشت</item>
+        <item>درب ولیعصر</item>
+        <item>دانشکده مهندسی کامپیوتر</item>
+        <item>بوفه</item>
+        <item>پارک پلیمر</item>
+    </string-array>
+</resources>
