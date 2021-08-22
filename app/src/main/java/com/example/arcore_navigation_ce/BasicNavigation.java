@@ -81,7 +81,7 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
     private int mInstructionNum;
     int index = 0;
     Vibrator v;
-    Button done;
+//    Button done;
 
     private String destinationPlace;
 
@@ -96,10 +96,10 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_source_detection);
 
-        done = findViewById(R.id.done);
-        done.setOnClickListener(view -> {
-            Toast.makeText(com.example.arcore_navigation_ce.BasicNavigation.this, "Steps : " + numSteps, Toast.LENGTH_SHORT).show();
-        });
+//        done = findViewById(R.id.done);
+//        done.setOnClickListener(view -> {
+//            Toast.makeText(com.example.arcore_navigation_ce.BasicNavigation.this, "Steps : " + numSteps, Toast.LENGTH_SHORT).show();
+//        });
 
 
         mInstructionNum = 0;

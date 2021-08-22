@@ -36,46 +36,22 @@ import java.util.List;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import io.reactivex.schedulers.Schedulers;
 
 public class BasicNavigation2 extends AppCompatActivity implements SensorEventListener {
 
-    private StepDetector simpleStepDetector;
     private SensorManager sensorManager;
-    private int numSteps;
     private ArFragment fragment;
+    String origin;
+    String destLatLong;
 
-    String source;
-    String sourceFloor;
-    String sourcePlace;
-    String destinationFloor;
-    String destination;
-    String src_dst;
-    ArrayList<String> myPath = new ArrayList();
     private PointerDrawable pointer = new PointerDrawable();
     private boolean isTracking;
     private boolean isHitting;
 
-    private int stepsFromDetector = 0;
-    private int stepsFromCounter = 0;
-
-
-    private int mListenerRegistered = 0;
-
-    private final float[] mLastAccelerometer = new float[3];
-    private final float[] mLastMagnetometer = new float[3];
-    private boolean mLastAccelerometerSet = false;
-    private boolean mLastMagnetometerSet = false;
-
-    float[] rMat = new float[9];
-    float[] orientation = new float[3];
-    int mAbsoluteDir;
-    boolean goNext = false;
-    private int mInstructionNum;
-    int index = 0;
     Vibrator v;
     Button done;
 
-    private String destinationPlace;
 
     public BasicNavigation2() throws JSONException {
     }
@@ -88,45 +64,18 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_source_detection);
 
-        done = findViewById(R.id.done);
-        done.setOnClickListener(view -> {
-            Toast.makeText(BasicNavigation2.this, "Steps : " + numSteps, Toast.LENGTH_SHORT).show();
-        });
-
-
-        mInstructionNum = 0;
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
 
         //Source and Destination String
         Bundle b = getIntent().getExtras();
+        origin = b.getString("origin");
+        destLatLong = b.getString("destLatLong");
         try {
-            JSONObject directionsJson = new JSONObject(loadJSONFromAsset("directions.json"));
-            JSONArray dirs = directionsJson.getJSONArray("dirs");
-            JSONObject dictionaryJson = new JSONObject(loadJSONFromAsset("dictionary.json"));
-            JSONArray dictionary = dictionaryJson.getJSONArray("dict");
-            JSONObject dictObj = new JSONObject(dictionary.get(0).toString());
-            source = dictObj.get(b.getString("source")).toString();
-            sourcePlace = source.split("_")[0];
-            sourceFloor = source.split("_")[1];
-            destination = dictObj.get(b.getString("destination")).toString();
-            destinationPlace = destination.split("_")[0];
-            destinationFloor = destination.split("_")[1];
-            src_dst = sourcePlace + '_' + destinationPlace;
-            JSONArray path = new JSONObject(dirs.get(0).toString()).getJSONArray(src_dst);
-            for (int i = 0; i < path.length(); i++) {
-                String dir = String.valueOf(path.getJSONObject(i).toString().charAt(2));
-                Integer steps = Integer.valueOf(new JSONObject((path.getJSONObject(i).toString())).get(dir).toString());
-                myPath.add(dir + ' ' + String.valueOf(steps));
-            }
-
-        } catch (JSONException e) {
+            Root root = ServiceModule.providePlaceService().getRoute(origin, "car", destLatLong).subscribeOn(Schedulers.io()).blockingFirst();
+            System.out.println(root.getRoutes().get(0).getLegs().get(0).summary);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        //Reading the Related Path from Directions Json
-
         fragment = (ArFragment)
                 getSupportFragmentManager().findFragmentById(R.id.cam_fragment);
         fragment.getArSceneView().getScene().addOnUpdateListener(frameTime -> {
@@ -139,139 +88,12 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void startNavigation() {
-
-        //Sensors
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        Sensor magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        Sensor stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-        Sensor stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        simpleStepDetector = new StepDetector();
-//        simpleStepDetector.registerListener(this);
-        numSteps = 0;
-        sensorManager.registerListener(BasicNavigation2.this, accelerometer,
-                SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(BasicNavigation2.this, magnetometer,
-                SensorManager.SENSOR_DELAY_UI);
-        sensorManager.registerListener(BasicNavigation2.this, stepDetector, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(BasicNavigation2.this, stepCounter, SensorManager.SENSOR_DELAY_NORMAL);
-        mListenerRegistered = 1;
     }
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onSensorChanged(SensorEvent event) {
-
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            simpleStepDetector.updateAccelerometer(
-                    event.timestamp, event.values[0], event.values[1], event.values[2]);
-        }
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            simpleStepDetector.updateAccelerometer(
-                    event.timestamp, event.values[0], event.values[1], event.values[2]);
-            System.arraycopy(event.values, 0, mLastAccelerometer, 0, event.values.length);
-            mLastAccelerometerSet = true;
-        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            System.arraycopy(event.values, 0, mLastMagnetometer, 0, event.values.length);
-            mLastMagnetometerSet = true;
-        }
-        if (mLastAccelerometerSet && mLastMagnetometerSet) {
-            SensorManager.getRotationMatrix(rMat, null, mLastAccelerometer, mLastMagnetometer);
-            SensorManager.getOrientation(rMat, orientation);
-            mAbsoluteDir = (int) (Math.toDegrees(SensorManager.getOrientation(rMat, orientation)[0]) + 360) % 360;
-            mAbsoluteDir = getRange(Math.round(mAbsoluteDir));
-        }
-
-        if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
-            stepsFromDetector += (int) event.values[0];
-//            v.vibrate(100);
-            Toast.makeText(BasicNavigation2.this, "From Detector : " + stepsFromDetector, Toast.LENGTH_SHORT).show();
-        }
-        if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-//            v.vibrate(100);
-            if (stepsFromCounter < 1) {
-                stepsFromCounter = (int) event.values[0];
-            }
-//            stepsFromCounter = 0;
-            numSteps = (int) event.values[0] - stepsFromCounter;
-            Toast.makeText(BasicNavigation2.this, "From Counter : " + numSteps, Toast.LENGTH_SHORT).show();
-//            if (index < myPath.size()) {
-//                String[] strings = myPath.get(index).split(" ");
-//                Integer key = Integer.valueOf(strings[0]);
-//                Integer value = Integer.valueOf(strings[1]);
-//                if (mAbsoluteDir == key) {
-//                    Toast.makeText(this, "Correct Direction " + key + " : " + numSteps, Toast.LENGTH_SHORT).show();
-////                addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//
-//                    if (numSteps + 3 == value || numSteps - 3 == value) {
-////                    Toast.makeText(BasicNavigation.this, "You walked " + numSteps, Toast.LENGTH_SHORT).show();
-//                        numSteps = 0;
-//                        index++;
-//                        if (index == myPath.size()) {
-//                            Toast.makeText(BasicNavigation.this, "You've reached your destination", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            String[] strings2 = myPath.get(index).split(" ");
-//                            Integer key2 = Integer.valueOf(strings2[0]);
-//                            Toast.makeText(BasicNavigation.this, "Please Turn" + key2, Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                } else {
-//                    if (mAbsoluteDir == 1) {
-//                        if (key == 2) {
-//                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                        }
-//                        if (key == 3) {
-//                            addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
-//                        }
-//                        if (key == 4) {
-//                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                        }
-//                    }
-//                    if (mAbsoluteDir == 2) {
-//                        if (key == 1) {
-//                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                        }
-//                        if (key == 3) {
-//                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                        }
-//                        if (key == 4) {
-//                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//                        }
-//                    }
-//                    if (mAbsoluteDir == 3) {
-//                        if (key == 1) {
-//                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//                        }
-//                        if (key == 2) {
-//                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                        }
-//                        if (key == 4) {
-//                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                        }
-//                    }
-//                    if (mAbsoluteDir == 4) {
-//                        if (key == 1) {
-//                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                        }
-//                        if (key == 2) {
-//                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//                        }
-//                        if (key == 3) {
-//                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                        }
-//                    }
-//                    Toast.makeText(BasicNavigation.this, "Wrong direction, Turn" + key, Toast.LENGTH_SHORT).show();
-//                    numSteps = 0;
-//                }
-//
-//
-//            } else if (index == myPath.size()) {
-//                Toast.makeText(BasicNavigation.this, "You've reached your destination2", Toast.LENGTH_SHORT).show();
-//            }
-
-        }
-
 
     }
 
@@ -381,21 +203,6 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
         return mRangeVal;
     }
 
-    public String loadJSONFromAsset(String address) {
-        String json = null;
-        try {
-            InputStream is = this.getAssets().open(address);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
 
     //-----------------------------AR Object placement----------------------------------------------
 
@@ -428,19 +235,7 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
                         }
 
                 );
-//        CompletableFuture<Void> renderableFuture =
-//                ModelRenderable.builder()
-//                        .setSource(fragment.getContext(), model)
-//                        .build()
-//                        .thenAccept(renderable -> addNodeToScene(fragment, anchor, renderable))
-//                        .exceptionally((throwable -> {
-//                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                            builder.setMessage(throwable.getMessage())
-//                                    .setTitle("Codelab error!");
-//                            AlertDialog dialog = builder.create();
-//                            dialog.show();
-//                            return null;
-//                        }));
+
     }
 
     private void addNodeToScene(ArFragment fragment, Anchor anchor, Renderable renderable) {

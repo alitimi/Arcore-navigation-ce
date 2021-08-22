@@ -77,12 +77,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         first = sharedPreferences.getString("firstName", null);
         last = sharedPreferences.getString("lastName", null);
         test.setOnClickListener(view -> {
-//            try {
-//                Root root = ServiceModule.providePlaceService().getRoute("35.706507,51.406230", "car", "35.707533,51.415337").subscribeOn(Schedulers.io()).blockingFirst();
-//                System.out.println(root.getRoutes().get(0).getLegs().get(0).summary);
-//            } catch (Exception e){
-//                e.printStackTrace();
-//            }
             Intent intent = new Intent(MainActivity.this, Location.class);
             startActivity(intent);
         });

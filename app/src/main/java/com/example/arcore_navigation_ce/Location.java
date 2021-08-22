@@ -1,11 +1,17 @@
 package com.example.arcore_navigation_ce;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,6 +20,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Location extends AppCompatActivity {
@@ -22,14 +29,35 @@ public class Location extends AppCompatActivity {
     String destination;
     String destLatLong;
     String origin;
+    Handler handler;
+    double latitude;
+    double longitude;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_destinations_list2);
 
-        //TODO get users origin (lat-long)
+        if (isNetworkConnected()) {
+            if (isGPSEnabled(Location.this)) {
+//                requestPermissions(new String[]{Manifest.permission.ACCESS, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
+                handler = new Handler();
+                handler.post(new Runnable() {
+                    public void run() {
+                        GPSTracker gpsTracker = new GPSTracker(Location.this);
+                        if (gpsTracker.canGetLocation()) {
+                            double latitude = gpsTracker.getLatitude();
+                            double longitude = gpsTracker.getLongitude();
+                            Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+                        } else {
+                            gpsTracker.showSettingsAlert();
+                        }
+                    }
+                });
+            }
+        }
 
         listView = (ListView) findViewById(R.id.destination_list2);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -54,8 +82,8 @@ public class Location extends AppCompatActivity {
 
             }
         });
-
     }
+
 
     public String loadJSONFromAsset(String address) {
         String json = null;
@@ -71,5 +99,18 @@ public class Location extends AppCompatActivity {
             return null;
         }
         return json;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+    public boolean isGPSEnabled(Context mContext) {
+        LocationManager lm = (LocationManager)
+                mContext.getSystemService(Context.LOCATION_SERVICE);
+        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 }
