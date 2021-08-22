@@ -40,24 +40,7 @@ public class Location extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_destinations_list2);
 
-        if (isNetworkConnected()) {
-            if (isGPSEnabled(Location.this)) {
-//                requestPermissions(new String[]{Manifest.permission.ACCESS, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
-                handler = new Handler();
-                handler.post(new Runnable() {
-                    public void run() {
-                        GPSTracker gpsTracker = new GPSTracker(Location.this);
-                        if (gpsTracker.canGetLocation()) {
-                            double latitude = gpsTracker.getLatitude();
-                            double longitude = gpsTracker.getLongitude();
-                            Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
-                        } else {
-                            gpsTracker.showSettingsAlert();
-                        }
-                    }
-                });
-            }
-        }
+
 
         listView = (ListView) findViewById(R.id.destination_list2);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,6 +56,26 @@ public class Location extends AppCompatActivity {
                     destLatLong = latlongObject.get(destination).toString();
                 } catch (JSONException e) {
                     e.printStackTrace();
+                }
+                if (isNetworkConnected()) {
+                    if (isGPSEnabled(Location.this)) {
+//                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
+                        handler = new Handler();
+                        handler.post(new Runnable() {
+                            public void run() {
+                                GPSTracker gpsTracker = new GPSTracker(Location.this);
+                                if (gpsTracker.canGetLocation()) {
+                                    double latitude = gpsTracker.getLatitude();
+                                    double longitude = gpsTracker.getLongitude();
+                                    Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+                                    handler.postDelayed(this, 200); //now is every 3 minutes
+
+                                } else {
+                                    gpsTracker.showSettingsAlert();
+                                }
+                            }
+                        });
+                    }
                 }
 
                 Intent intent = new Intent(Location.this, BasicNavigation2.class);
