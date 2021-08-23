@@ -13,7 +13,7 @@
 
         <activity android:name=".SourceDetection" />
         <activity android:name="com.example.arcore_navigation_ce.Destination" />
-        <activity android:name="com.example.arcore_navigation_ce.Location" />
+        <activity android:name="com.example.arcore_navigation_ce.GetLocation" />
         <activity android:name=".BasicNavigation" />
         <activity android:name=".BasicNavigation2" />
         <activity android:name="com.example.arcore_navigation_ce.MainActivity">

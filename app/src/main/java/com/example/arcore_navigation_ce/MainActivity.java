@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         first = sharedPreferences.getString("firstName", null);
         last = sharedPreferences.getString("lastName", null);
         test.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, Location.class);
+            Intent intent = new Intent(MainActivity.this, GetLocation.class);
             startActivity(intent);
         });
         if (first != null) {

@@ -5,9 +5,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
@@ -25,12 +29,8 @@ import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,12 +45,22 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
     String origin;
     String destLatLong;
 
+
     private PointerDrawable pointer = new PointerDrawable();
     private boolean isTracking;
     private boolean isHitting;
+    Handler handler;
+
+    int i;
+
 
     Vibrator v;
     Button done;
+
+    double latitude;
+    double longitude;
+    ArrayList<String> index_location = new ArrayList<>();
+    ArrayList<String> index_instruction = new ArrayList<>();
 
 
     public BasicNavigation2() throws JSONException {
@@ -72,6 +82,16 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
         destLatLong = b.getString("destLatLong");
         try {
             Root root = ServiceModule.providePlaceService().getRoute(origin, "car", destLatLong).subscribeOn(Schedulers.io()).blockingFirst();
+            for (int i = 0; i < root.routes.get(0).legs.get(0).steps.size(); i++) {
+                index_instruction.add(root.routes.get(0).legs.get(0).steps.get(i).instruction);
+                index_location.add(root.routes.get(0).legs.get(0).steps.get(i).start_location.get(0) +
+                        "," + root.routes.get(0).legs.get(0).steps.get(i).start_location.get(1));
+//                desc.add(root.routes.get(0).legs.get(0).steps.get(i).instruction);
+
+//                distance.add(Float.valueOf(root.routes.get(0).legs.get(0).steps.get(i).distance.value));
+//                latitude.add(root.routes.get(0).legs.get(0).steps.get(i).start_location.get(0));
+//                longitude.add(root.routes.get(0).legs.get(0).steps.get(i).start_location.get(1));
+            }
             System.out.println(root.getRoutes().get(0).getLegs().get(0).summary);
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,12 +102,66 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
             fragment.onUpdate(frameTime);
             onUpdate();
         });
+
+        GPSTracker gpsTracker = new GPSTracker(BasicNavigation2.this);
+        if (gpsTracker.canGetLocation()) {
+            latitude = gpsTracker.getLatitude();
+            longitude = gpsTracker.getLongitude();
+        }
         startNavigation();
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void startNavigation() {
+        for (i = 0; i < index_location.size(); i++) {
+            if (isNetworkConnected()) {
+                if (isGPSEnabled(BasicNavigation2.this)) {
+//                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
+                    handler = new Handler();
+                    handler.post(new Runnable() {
+                        public void run() {
+                            GPSTracker gpsTracker = new GPSTracker(BasicNavigation2.this);
+                            if (gpsTracker.canGetLocation()) {
+                                latitude = gpsTracker.getLatitude();
+                                longitude = gpsTracker.getLongitude();
+                                handler.postDelayed(this, 5000); //now is every 5 seconds
+                                Location user = new Location("");
+                                Location location = new Location("");
+                                String[] loc = index_location.get(i).split(",");
+                                location.setLatitude(Double.parseDouble(loc[1]));
+                                location.setLongitude(Double.parseDouble(loc[0]));
+                                user.setLatitude(latitude);
+                                user.setLongitude(longitude);
+//                                float distanceInMetersOne = user.distanceTo(location);
+                                double distanceInMetersOne = meterDistanceBetweenPoints(Float.valueOf(String.valueOf(user.getLatitude())),Float.valueOf(String.valueOf(user.getLongitude())),Float.valueOf(String.valueOf(location.getLatitude())), Float.valueOf(String.valueOf(location.getLongitude())));
+                                Toast.makeText(BasicNavigation2.this, distanceInMetersOne + "", Toast.LENGTH_SHORT).show();
+                            } else {
+                                gpsTracker.showSettingsAlert();
+                            }
+                        }
+                    });
+                }
+            }
+
+
+        }
+    }
+
+    private double meterDistanceBetweenPoints(float lat_a, float lng_a, float lat_b, float lng_b) {
+        float pk = (float) (180.f/Math.PI);
+
+        float a1 = lat_a / pk;
+        float a2 = lng_a / pk;
+        float b1 = lat_b / pk;
+        float b2 = lng_b / pk;
+
+        double t1 = Math.cos(a1) * Math.cos(a2) * Math.cos(b1) * Math.cos(b2);
+        double t2 = Math.cos(a1) * Math.sin(a2) * Math.cos(b1) * Math.sin(b2);
+        double t3 = Math.sin(a1) * Math.sin(b1);
+        double tt = Math.acos(t1 + t2 + t3);
+
+        return 6366000 * tt;
     }
 
 
@@ -102,93 +176,18 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
 
     }
 
-//    @RequiresApi(api = Build.VERSION_CODES.N)
-//    @Override
-//    public void step(long timeNs) {
-//        Snackbar snackbar;
-//        int limNumSteps = -1;
-//        if (numSteps == limNumSteps) {
-//            mListenerRegistered = 0;
-//            sensorManager.unregisterListener(BasicNavigation.this);
-//            numSteps = 0;
-//        }
-//
-//        if (index < myPath.size()) {
-//            String[] strings = myPath.get(index).split(" ");
-//            Integer key = Integer.valueOf(strings[0]);
-//            Integer value = Integer.valueOf(strings[1]);
-//            if (mAbsoluteDir == key) {
-//                numSteps++;
-//                Toast.makeText(this, "Correct Direction " + key + " : " + numSteps, Toast.LENGTH_SHORT).show();
-////                addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//
-//                if (numSteps == value) {
-////                    Toast.makeText(BasicNavigation.this, "You walked " + numSteps, Toast.LENGTH_SHORT).show();
-//                    numSteps = 0;
-//                    index++;
-//
-//                    if (index == myPath.size()) {
-//                        Toast.makeText(BasicNavigation.this, "You've reached your destination", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        String[] strings2 = myPath.get(index).split(" ");
-//                        Integer key2 = Integer.valueOf(strings2[0]);
-//                        Toast.makeText(BasicNavigation.this, "Please Turn" + key2, Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            } else {
-//                if (mAbsoluteDir == 1) {
-//                    if (key == 2) {
-//                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                    }
-//                    if (key == 3) {
-//                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
-//                    }
-//                    if (key == 4) {
-//                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                    }
-//                }
-//                if (mAbsoluteDir == 2) {
-//                    if (key == 1) {
-//                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                    }
-//                    if (key == 3) {
-//                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                    }
-//                    if (key == 4) {
-//                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//                    }
-//                }
-//                if (mAbsoluteDir == 3) {
-//                    if (key == 1) {
-//                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//                    }
-//                    if (key == 2) {
-//                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                    }
-//                    if (key == 4) {
-//                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                    }
-//                }
-//                if (mAbsoluteDir == 4) {
-//                    if (key == 1) {
-//                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                    }
-//                    if (key == 2) {
-//                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//                    }
-//                    if (key == 3) {
-//                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                    }
-//                }
-//                Toast.makeText(BasicNavigation.this, "Wrong direction, Turn" + key, Toast.LENGTH_SHORT).show();
-//            }
-//
-//        } else if (index == myPath.size()) {
-//            Toast.makeText(BasicNavigation.this, "You've reached your destination2", Toast.LENGTH_SHORT).show();
-//        }
-//
-//    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+    public boolean isGPSEnabled(Context mContext) {
+        LocationManager lm = (LocationManager)
+                mContext.getSystemService(Context.LOCATION_SERVICE);
+        return lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
 
     public int getRange(int degree) {
         int mRangeVal = 0;
@@ -308,4 +307,5 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
     }
 
     //----------------------------------------------------------------------------------------------
+
 }

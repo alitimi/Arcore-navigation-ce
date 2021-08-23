@@ -23,7 +23,7 @@ import java.io.InputStream;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class Location extends AppCompatActivity {
+public class GetLocation extends AppCompatActivity {
 
     ListView listView;
     String destination;
@@ -32,6 +32,7 @@ public class Location extends AppCompatActivity {
     Handler handler;
     double latitude;
     double longitude;
+    final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -39,7 +40,6 @@ public class Location extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_destinations_list2);
-
 
 
         listView = (ListView) findViewById(R.id.destination_list2);
@@ -58,17 +58,22 @@ public class Location extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if (isNetworkConnected()) {
-                    if (isGPSEnabled(Location.this)) {
-//                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
+                    if (isGPSEnabled(GetLocation.this)) {
+//                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
                         handler = new Handler();
                         handler.post(new Runnable() {
                             public void run() {
-                                GPSTracker gpsTracker = new GPSTracker(Location.this);
+                                GPSTracker gpsTracker = new GPSTracker(GetLocation.this);
                                 if (gpsTracker.canGetLocation()) {
-                                    double latitude = gpsTracker.getLatitude();
-                                    double longitude = gpsTracker.getLongitude();
+                                    latitude = gpsTracker.getLatitude();
+                                    longitude = gpsTracker.getLongitude();
+                                    origin = latitude + "," + longitude;
+                                    Intent intent = new Intent(GetLocation.this, BasicNavigation2.class);
+                                    intent.putExtra("origin", origin);
+                                    intent.putExtra("destLatLong", destLatLong);
+                                    startActivity(intent);
                                     Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
-                                    handler.postDelayed(this, 200); //now is every 3 minutes
+//                                    handler.postDelayed(this, 200); //now is every 3 minutes
 
                                 } else {
                                     gpsTracker.showSettingsAlert();
@@ -78,10 +83,7 @@ public class Location extends AppCompatActivity {
                     }
                 }
 
-                Intent intent = new Intent(Location.this, BasicNavigation2.class);
-                intent.putExtra("origin", origin);
-                intent.putExtra("destLatLong", destLatLong);
-                startActivity(intent);
+
 
             }
         });

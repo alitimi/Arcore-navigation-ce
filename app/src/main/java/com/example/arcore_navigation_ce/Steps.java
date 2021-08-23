@@ -1,5 +1,7 @@
 package com.example.arcore_navigation_ce;
 
+import java.util.ArrayList;
+
 public class Steps {
 
     String name;
@@ -8,14 +10,24 @@ public class Steps {
     Duration duration;
     String polyline;
     String maneuver;
+    ArrayList<Double> start_location;
 
-    public Steps(String name, String instruction, Distance distance, Duration duration, String polyline, String maneuver) {
+    public Steps(String name, String instruction, Distance distance, Duration duration, String polyline, String maneuver, ArrayList<Double> start_location) {
         this.name = name;
         this.instruction = instruction;
         this.distance = distance;
         this.duration = duration;
         this.polyline = polyline;
         this.maneuver = maneuver;
+        this.start_location = start_location;
+    }
+
+    public ArrayList<Double> getStart_location() {
+        return start_location;
+    }
+
+    public void setStart_location(ArrayList<Double> start_location) {
+        this.start_location = start_location;
     }
 
     public String getName() {
