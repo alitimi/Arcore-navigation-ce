@@ -1,6 +1,7 @@
 package com.example.arcore_navigation_ce;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -120,7 +121,12 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
             destination = dictObj.get(b.getString("destination")).toString();
             destinationPlace = destination.split("_")[0];
             destinationFloor = destination.split("_")[1];
-            src_dst = sourcePlace + '_' + destinationPlace;
+            if (!sourceFloor.equals(destinationFloor)) {
+                Toast.makeText(BasicNavigation.this, "به آسانسور هدایت می شوید", Toast.LENGTH_SHORT).show();
+                src_dst = sourcePlace + sourceFloor + "_Elevator" + sourceFloor;
+            } else {
+                src_dst = sourcePlace + sourceFloor + '_' + destinationPlace + destinationFloor;
+            }
             JSONArray path = new JSONObject(dirs.get(0).toString()).getJSONArray(src_dst);
             for (int i = 0; i < path.length(); i++) {
                 String dir = String.valueOf(path.getJSONObject(i).toString().charAt(2));
@@ -141,6 +147,7 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
             fragment.onUpdate(frameTime);
             onUpdate();
         });
+
         startNavigation();
 
     }
@@ -204,79 +211,83 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
 //            stepsFromCounter = 0;
             numSteps = (int) event.values[0] - stepsFromCounter;
             Toast.makeText(com.example.arcore_navigation_ce.BasicNavigation.this, "From Counter : " + numSteps, Toast.LENGTH_SHORT).show();
-//            if (index < myPath.size()) {
-//                String[] strings = myPath.get(index).split(" ");
-//                Integer key = Integer.valueOf(strings[0]);
-//                Integer value = Integer.valueOf(strings[1]);
-//                if (mAbsoluteDir == key) {
-//                    Toast.makeText(this, "Correct Direction " + key + " : " + numSteps, Toast.LENGTH_SHORT).show();
-////                addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//
-//                    if (numSteps + 3 == value || numSteps - 3 == value) {
-////                    Toast.makeText(BasicNavigation.this, "You walked " + numSteps, Toast.LENGTH_SHORT).show();
-//                        numSteps = 0;
-//                        index++;
-//                        if (index == myPath.size()) {
-//                            Toast.makeText(BasicNavigation.this, "You've reached your destination", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            String[] strings2 = myPath.get(index).split(" ");
-//                            Integer key2 = Integer.valueOf(strings2[0]);
-//                            Toast.makeText(BasicNavigation.this, "Please Turn" + key2, Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                } else {
-//                    if (mAbsoluteDir == 1) {
-//                        if (key == 2) {
-//                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                        }
-//                        if (key == 3) {
-//                            addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
-//                        }
-//                        if (key == 4) {
-//                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                        }
-//                    }
-//                    if (mAbsoluteDir == 2) {
-//                        if (key == 1) {
-//                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                        }
-//                        if (key == 3) {
-//                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                        }
-//                        if (key == 4) {
-//                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//                        }
-//                    }
-//                    if (mAbsoluteDir == 3) {
-//                        if (key == 1) {
-//                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//                        }
-//                        if (key == 2) {
-//                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                        }
-//                        if (key == 4) {
-//                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                        }
-//                    }
-//                    if (mAbsoluteDir == 4) {
-//                        if (key == 1) {
-//                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                        }
-//                        if (key == 2) {
-//                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//                        }
-//                        if (key == 3) {
-//                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                        }
-//                    }
-//                    Toast.makeText(BasicNavigation.this, "Wrong direction, Turn" + key, Toast.LENGTH_SHORT).show();
-//                    numSteps = 0;
-//                }
-//
-//
-//            } else if (index == myPath.size()) {
-//                Toast.makeText(BasicNavigation.this, "You've reached your destination2", Toast.LENGTH_SHORT).show();
-//            }
+            if (index < myPath.size()) {
+                String[] strings = myPath.get(index).split(" ");
+                Integer key = Integer.valueOf(strings[0]);
+                Integer value = Integer.valueOf(strings[1]);
+                if (mAbsoluteDir == key) {
+                    Toast.makeText(this, "Correct Direction " + key + " : " + numSteps, Toast.LENGTH_SHORT).show();
+//                addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+
+                    if (numSteps + 3 == value || numSteps - 3 == value) {
+//                    Toast.makeText(BasicNavigation.this, "You walked " + numSteps, Toast.LENGTH_SHORT).show();
+                        numSteps = 0;
+                        index++;
+                        if (index == myPath.size()) {
+                            Toast.makeText(BasicNavigation.this, "You've reached your destination", Toast.LENGTH_SHORT).show();
+                        } else {
+                            String[] strings2 = myPath.get(index).split(" ");
+                            Integer key2 = Integer.valueOf(strings2[0]);
+                            Toast.makeText(BasicNavigation.this, "Please Turn" + key2, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                } else {
+                    if (mAbsoluteDir == 1) {
+                        if (key == 2) {
+                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                        }
+                        if (key == 3) {
+                            addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                        }
+                        if (key == 4) {
+                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                        }
+                    }
+                    if (mAbsoluteDir == 2) {
+                        if (key == 1) {
+                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                        }
+                        if (key == 3) {
+                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                        }
+                        if (key == 4) {
+                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                        }
+                    }
+                    if (mAbsoluteDir == 3) {
+                        if (key == 1) {
+                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                        }
+                        if (key == 2) {
+                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                        }
+                        if (key == 4) {
+                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                        }
+                    }
+                    if (mAbsoluteDir == 4) {
+                        if (key == 1) {
+                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                        }
+                        if (key == 2) {
+                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                        }
+                        if (key == 3) {
+                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                        }
+                    }
+                    Toast.makeText(BasicNavigation.this, "Wrong direction, Turn" + key, Toast.LENGTH_SHORT).show();
+                    numSteps = 0;
+                }
+
+
+            } else if (index == myPath.size()) {
+                Toast.makeText(BasicNavigation.this, "You've reached your destination2", Toast.LENGTH_SHORT).show();
+                if (!sourceFloor.equals(destinationFloor)) {
+                    Intent intent = new Intent(BasicNavigation.this, Destination.class);
+                    startActivity(intent);
+                }
+            }
 
         }
 
