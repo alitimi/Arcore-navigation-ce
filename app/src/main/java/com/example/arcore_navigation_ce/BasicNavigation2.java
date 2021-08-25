@@ -41,7 +41,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class BasicNavigation2 extends AppCompatActivity implements SensorEventListener {
 
-    private SensorManager sensorManager;
     private ArFragment fragment;
     String origin;
     String destLatLong;
@@ -54,7 +53,6 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
 
 
     Vibrator v;
-    Button done;
 
     int count = 0;
 
@@ -62,6 +60,7 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
     double longitude;
     ArrayList<String> index_location = new ArrayList<>();
     ArrayList<String> index_instruction = new ArrayList<>();
+    ArrayList<String> index_maneuvers = new ArrayList<>();
 
 
     public BasicNavigation2() throws JSONException {
@@ -87,6 +86,8 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
                 index_instruction.add(root.routes.get(0).legs.get(0).steps.get(i).instruction);
                 index_location.add(root.routes.get(0).legs.get(0).steps.get(i).start_location.get(0) +
                         "," + root.routes.get(0).legs.get(0).steps.get(i).start_location.get(1));
+                index_maneuvers.add(root.routes.get(0).legs.get(0).steps.get(i).maneuver);
+
 //                desc.add(root.routes.get(0).legs.get(0).steps.get(i).instruction);
 
 //                distance.add(Float.valueOf(root.routes.get(0).legs.get(0).steps.get(i).distance.value));

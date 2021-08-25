@@ -52,7 +52,7 @@
             android:layoutDirection="ltr">
 
             <TextView
-                android:text="Amir Kabir Navigation"
+                android:text="@string/amir_kabir_navigation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView1"
@@ -62,7 +62,7 @@
                 android:textSize="18dp" />
 
             <TextView
-                android:text="مسیریابی امیرکبیر"
+                android:text="@string/persian_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView2"

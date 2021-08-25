@@ -90,4 +90,8 @@
     <string name="detectText">شروع مسیربابی</string>
     <string name="IndoorNavigation">مسیریابی دانشکده کامپیوتر</string>
     <string name="OutdoorNavigation">مسیریابی دانشگاه امیرکبیر</string>
+    <string name="outdoorDestination">لطفا مقصد خود را انتخاب نمایید.</string>
+    <string name="indoorDestination">لطفا ابتدا مقصد موردنظر خود را انتخاب کرده و سپس نزدیک ترین بارکد را اسکن کنید.</string>
+    <string name="amir_kabir_navigation">Amir Kabir Navigation</string>
+    <string name="persian_header">مسیریابی امیرکبیر</string>
 </resources>

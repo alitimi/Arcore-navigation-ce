@@ -18,7 +18,7 @@
         app:contentInsetStartWithNavigation="0dp" >
 
         <TextView
-            android:text="لطفا ابتدا مقصد موردنظر خود را انتخاب کرده و سپس نزدیک ترین بارکد را اسکن کنید."
+            android:text="@string/indoorDestination"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/ic_launcher_background"
