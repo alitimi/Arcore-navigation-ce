@@ -32,6 +32,7 @@ import com.google.ar.sceneform.ux.TransformableNode;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import androidx.annotation.RequiresApi;
@@ -51,11 +52,11 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
     private boolean isHitting;
     Handler handler;
 
-    int i;
-
 
     Vibrator v;
     Button done;
+
+    int count = 0;
 
     double latitude;
     double longitude;
@@ -108,13 +109,15 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
             latitude = gpsTracker.getLatitude();
             longitude = gpsTracker.getLongitude();
         }
-        startNavigation();
+//        startNavigation();
+        test();
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void startNavigation() {
-        for (i = 0; i < index_location.size(); i++) {
+        for (int i = 0; i < index_location.size(); i++) {
+            int index = i;
             if (isNetworkConnected()) {
                 if (isGPSEnabled(BasicNavigation2.this)) {
 //                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
@@ -125,16 +128,22 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
                             if (gpsTracker.canGetLocation()) {
                                 latitude = gpsTracker.getLatitude();
                                 longitude = gpsTracker.getLongitude();
-                                handler.postDelayed(this, 5000); //now is every 5 seconds
                                 Location user = new Location("");
                                 Location location = new Location("");
-                                String[] loc = index_location.get(i).split(",");
+                                String[] loc = index_location.get(index).split(",");
                                 location.setLatitude(Double.parseDouble(loc[1]));
                                 location.setLongitude(Double.parseDouble(loc[0]));
                                 user.setLatitude(latitude);
                                 user.setLongitude(longitude);
 //                                float distanceInMetersOne = user.distanceTo(location);
-                                double distanceInMetersOne = meterDistanceBetweenPoints(Float.valueOf(String.valueOf(user.getLatitude())),Float.valueOf(String.valueOf(user.getLongitude())),Float.valueOf(String.valueOf(location.getLatitude())), Float.valueOf(String.valueOf(location.getLongitude())));
+                                double distanceInMetersOne = meterDistanceBetweenPoints(Float.parseFloat(String.valueOf(user.getLatitude())),
+                                        Float.parseFloat(String.valueOf(user.getLongitude())), Float.parseFloat(String.valueOf(location.getLatitude())),
+                                        Float.parseFloat(String.valueOf(location.getLongitude())));
+                                if (distanceInMetersOne > 5) {
+                                    handler.postDelayed(this, 5000); //now is every 5 seconds
+                                } else {
+                                    handler.removeCallbacks(this);
+                                }
                                 Toast.makeText(BasicNavigation2.this, distanceInMetersOne + "", Toast.LENGTH_SHORT).show();
                             } else {
                                 gpsTracker.showSettingsAlert();
@@ -148,8 +157,54 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void test() {
+        Toast.makeText(BasicNavigation2.this, index_location.size() + "", Toast.LENGTH_SHORT).show();
+        if (isNetworkConnected()) {
+            if (isGPSEnabled(BasicNavigation2.this)) {
+                handler = new Handler();
+                handler.post(new Runnable() {
+                    public void run() {
+                        GPSTracker gpsTracker = new GPSTracker(BasicNavigation2.this);
+                        if (gpsTracker.canGetLocation()) {
+                            latitude = gpsTracker.getLatitude();
+                            longitude = gpsTracker.getLongitude();
+                            Location user = new Location("");
+                            Location location = new Location("");
+                            if (count < index_instruction.size()) {
+                                String[] loc = index_location.get(count).split(",");
+                                location.setLatitude(Double.parseDouble(loc[1]));
+                                location.setLongitude(Double.parseDouble(loc[0]));
+                                user.setLatitude(latitude);
+                                user.setLongitude(longitude);
+//                                float distanceInMetersOne = user.distanceTo(location);
+                                double distanceInMetersOne = meterDistanceBetweenPoints(Float.parseFloat(String.valueOf(user.getLatitude())),
+                                        Float.parseFloat(String.valueOf(user.getLongitude())), Float.parseFloat(String.valueOf(location.getLatitude())),
+                                        Float.parseFloat(String.valueOf(location.getLongitude())));
+                                if (distanceInMetersOne < 5) {
+                                    Toast.makeText(BasicNavigation2.this, distanceInMetersOne + "if", Toast.LENGTH_SHORT).show();
+                                    count++;
+                                } else {
+                                    Toast.makeText(BasicNavigation2.this, distanceInMetersOne + "else", Toast.LENGTH_SHORT).show();
+
+                                }
+                                Toast.makeText(BasicNavigation2.this, index_instruction.get(count), Toast.LENGTH_SHORT).show();
+                                handler.postDelayed(this, 3000);
+                            }
+
+                        } else {
+                            gpsTracker.showSettingsAlert();
+                        }
+                    }
+                });
+            }
+        }
+
+
+    }
+
     private double meterDistanceBetweenPoints(float lat_a, float lng_a, float lat_b, float lng_b) {
-        float pk = (float) (180.f/Math.PI);
+        float pk = (float) (180.f / Math.PI);
 
         float a1 = lat_a / pk;
         float a2 = lng_a / pk;
