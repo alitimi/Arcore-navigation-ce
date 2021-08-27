@@ -64,7 +64,7 @@
         android:id="@+id/cam_fragment"
         android:name="com.example.arcore_navigation_ce.WritingArFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_chainStyle="spread"
         app:layout_constraintVertical_weight="9"/>

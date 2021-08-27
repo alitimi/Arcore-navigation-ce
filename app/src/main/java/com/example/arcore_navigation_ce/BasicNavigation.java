@@ -199,28 +199,15 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
         }
 
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
-            stepsFromDetector += (int) event.values[0];
-//            v.vibrate(100);
-            Toast.makeText(com.example.arcore_navigation_ce.BasicNavigation.this, "From Detector : " + stepsFromDetector, Toast.LENGTH_SHORT).show();
-        }
-        if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-//            v.vibrate(100);
-            if (stepsFromCounter < 1) {
-                stepsFromCounter = (int) event.values[0];
-            }
-//            stepsFromCounter = 0;
-            numSteps = (int) event.values[0] - stepsFromCounter;
-            Toast.makeText(com.example.arcore_navigation_ce.BasicNavigation.this, "From Counter : " + numSteps, Toast.LENGTH_SHORT).show();
+            numSteps += (int) event.values[0];
             if (index < myPath.size()) {
                 String[] strings = myPath.get(index).split(" ");
                 Integer key = Integer.valueOf(strings[0]);
                 Integer value = Integer.valueOf(strings[1]);
                 if (mAbsoluteDir == key) {
                     Toast.makeText(this, "Correct Direction " + key + " : " + numSteps, Toast.LENGTH_SHORT).show();
-//                addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
 
-                    if (numSteps + 3 == value || numSteps - 3 == value) {
-//                    Toast.makeText(BasicNavigation.this, "You walked " + numSteps, Toast.LENGTH_SHORT).show();
+                    if (numSteps == value) {
                         numSteps = 0;
                         index++;
                         if (index == myPath.size()) {
@@ -288,7 +275,7 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
                     startActivity(intent);
                 }
             }
-
+            Toast.makeText(com.example.arcore_navigation_ce.BasicNavigation.this, "From Detector : " + numSteps, Toast.LENGTH_SHORT).show();
         }
 
 

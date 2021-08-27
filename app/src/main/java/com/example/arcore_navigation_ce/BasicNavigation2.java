@@ -1,9 +1,6 @@
 package com.example.arcore_navigation_ce;
 
 import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -32,15 +29,15 @@ import com.google.ar.sceneform.ux.TransformableNode;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import io.reactivex.schedulers.Schedulers;
 
-public class BasicNavigation2 extends AppCompatActivity implements SensorEventListener {
+public class BasicNavigation2 extends AppCompatActivity {
 
+    private SensorManager sensorManager;
     private ArFragment fragment;
     String origin;
     String destLatLong;
@@ -50,11 +47,13 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
     private boolean isTracking;
     private boolean isHitting;
     Handler handler;
-
-
-    Vibrator v;
+    Integer i = 0;
+    Integer j = 0;
 
     int count = 0;
+
+    Vibrator v;
+    Button done;
 
     double latitude;
     double longitude;
@@ -80,6 +79,7 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
         Bundle b = getIntent().getExtras();
         origin = b.getString("origin");
         destLatLong = b.getString("destLatLong");
+
         try {
             Root root = ServiceModule.providePlaceService().getRoute(origin, "car", destLatLong).subscribeOn(Schedulers.io()).blockingFirst();
             for (int i = 0; i < root.routes.get(0).legs.get(0).steps.size(); i++) {
@@ -87,17 +87,12 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
                 index_location.add(root.routes.get(0).legs.get(0).steps.get(i).start_location.get(0) +
                         "," + root.routes.get(0).legs.get(0).steps.get(i).start_location.get(1));
                 index_maneuvers.add(root.routes.get(0).legs.get(0).steps.get(i).maneuver);
-
-//                desc.add(root.routes.get(0).legs.get(0).steps.get(i).instruction);
-
-//                distance.add(Float.valueOf(root.routes.get(0).legs.get(0).steps.get(i).distance.value));
-//                latitude.add(root.routes.get(0).legs.get(0).steps.get(i).start_location.get(0));
-//                longitude.add(root.routes.get(0).legs.get(0).steps.get(i).start_location.get(1));
             }
             System.out.println(root.getRoutes().get(0).getLegs().get(0).summary);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         fragment = (ArFragment)
                 getSupportFragmentManager().findFragmentById(R.id.cam_fragment);
         fragment.getArSceneView().getScene().addOnUpdateListener(frameTime -> {
@@ -105,103 +100,61 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
             onUpdate();
         });
 
-        GPSTracker gpsTracker = new GPSTracker(BasicNavigation2.this);
-        if (gpsTracker.canGetLocation()) {
-            latitude = gpsTracker.getLatitude();
-            longitude = gpsTracker.getLongitude();
-        }
-//        startNavigation();
-        test();
-
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public void startNavigation() {
-        for (int i = 0; i < index_location.size(); i++) {
-            int index = i;
-            if (isNetworkConnected()) {
-                if (isGPSEnabled(BasicNavigation2.this)) {
-//                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
-                    handler = new Handler();
-                    handler.post(new Runnable() {
-                        public void run() {
-                            GPSTracker gpsTracker = new GPSTracker(BasicNavigation2.this);
-                            if (gpsTracker.canGetLocation()) {
-                                latitude = gpsTracker.getLatitude();
-                                longitude = gpsTracker.getLongitude();
-                                Location user = new Location("");
-                                Location location = new Location("");
-                                String[] loc = index_location.get(index).split(",");
-                                location.setLatitude(Double.parseDouble(loc[1]));
-                                location.setLongitude(Double.parseDouble(loc[0]));
-                                user.setLatitude(latitude);
-                                user.setLongitude(longitude);
-//                                float distanceInMetersOne = user.distanceTo(location);
-                                double distanceInMetersOne = meterDistanceBetweenPoints(Float.parseFloat(String.valueOf(user.getLatitude())),
-                                        Float.parseFloat(String.valueOf(user.getLongitude())), Float.parseFloat(String.valueOf(location.getLatitude())),
-                                        Float.parseFloat(String.valueOf(location.getLongitude())));
-                                if (distanceInMetersOne > 5) {
-                                    handler.postDelayed(this, 5000); //now is every 5 seconds
-                                } else {
-                                    handler.removeCallbacks(this);
-                                }
-                                Toast.makeText(BasicNavigation2.this, distanceInMetersOne + "", Toast.LENGTH_SHORT).show();
-                            } else {
-                                gpsTracker.showSettingsAlert();
-                            }
-                        }
-                    });
-                }
-            }
-
-
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void test() {
-        Toast.makeText(BasicNavigation2.this, index_location.size() + "", Toast.LENGTH_SHORT).show();
         if (isNetworkConnected()) {
             if (isGPSEnabled(BasicNavigation2.this)) {
                 handler = new Handler();
                 handler.post(new Runnable() {
+                    @Override
                     public void run() {
                         GPSTracker gpsTracker = new GPSTracker(BasicNavigation2.this);
                         if (gpsTracker.canGetLocation()) {
                             latitude = gpsTracker.getLatitude();
                             longitude = gpsTracker.getLongitude();
-                            Location user = new Location("");
-                            Location location = new Location("");
-                            if (count < index_instruction.size()) {
-                                String[] loc = index_location.get(count).split(",");
-                                location.setLatitude(Double.parseDouble(loc[1]));
-                                location.setLongitude(Double.parseDouble(loc[0]));
-                                user.setLatitude(latitude);
-                                user.setLongitude(longitude);
-//                                float distanceInMetersOne = user.distanceTo(location);
-                                double distanceInMetersOne = meterDistanceBetweenPoints(Float.parseFloat(String.valueOf(user.getLatitude())),
-                                        Float.parseFloat(String.valueOf(user.getLongitude())), Float.parseFloat(String.valueOf(location.getLatitude())),
-                                        Float.parseFloat(String.valueOf(location.getLongitude())));
-                                if (distanceInMetersOne < 5) {
-                                    Toast.makeText(BasicNavigation2.this, distanceInMetersOne + "if", Toast.LENGTH_SHORT).show();
-                                    count++;
-                                } else {
-                                    Toast.makeText(BasicNavigation2.this, distanceInMetersOne + "else", Toast.LENGTH_SHORT).show();
-
-                                }
-                                Toast.makeText(BasicNavigation2.this, index_instruction.get(count), Toast.LENGTH_SHORT).show();
-                                handler.postDelayed(this, 3000);
-                            }
-
+                            startNavigation();
                         } else {
                             gpsTracker.showSettingsAlert();
                         }
+                        handler.postDelayed(this, 10000);
+                        if (index_maneuvers.get(j).equals("depart")) {
+                            Toast.makeText(BasicNavigation2.this, "depart", Toast.LENGTH_SHORT).show();
+                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                        }
+                        if (index_maneuvers.get(j).equals("right")) {
+                            Toast.makeText(BasicNavigation2.this, "right", Toast.LENGTH_SHORT).show();
+                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                        }
+                        if (index_maneuvers.get(j).equals("left")) {
+                            Toast.makeText(BasicNavigation2.this, "left", Toast.LENGTH_SHORT).show();
+                            addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                        }
+                        if (index_maneuvers.get(j).equals("uturn")) {
+                            Toast.makeText(BasicNavigation2.this, "uturn", Toast.LENGTH_SHORT).show();
+                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                        }
                     }
+
                 });
+
             }
         }
+//        test();
 
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void startNavigation() {
+        Location user = new Location("");
+        user.setLatitude(latitude);
+        user.setLongitude(longitude);
+        Location location = new Location("");
+        String[] loc = index_location.get(j).split(",");
+        location.setLatitude(Double.parseDouble(loc[1]));
+        location.setLongitude(Double.parseDouble(loc[0]));
+        double distanceInMetersOne = meterDistanceBetweenPoints(Float.parseFloat(String.valueOf(user.getLatitude())), Float.parseFloat(String.valueOf(user.getLongitude())), Float.valueOf(String.valueOf(location.getLatitude())), Float.valueOf(String.valueOf(location.getLongitude())));
+        if (distanceInMetersOne <= 3.0) {
+            Toast.makeText(this, index_instruction.get(j) + "\n" + distanceInMetersOne, Toast.LENGTH_SHORT).show();
+            j++;
+        }
     }
 
     private double meterDistanceBetweenPoints(float lat_a, float lng_a, float lat_b, float lng_b) {
@@ -220,17 +173,6 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
         return 6366000 * tt;
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     boolean isNetworkConnected() {

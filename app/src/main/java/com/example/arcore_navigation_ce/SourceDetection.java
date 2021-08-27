@@ -60,20 +60,20 @@ public class SourceDetection extends AppCompatActivity {
                     new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
         }
 
-        mCapture = (Button) findViewById(R.id.capturebtnid);
-        mDetect = (Button) findViewById(R.id.detectbtnid);
-//        mGallery = (Button) findViewById(R.id.selectbtnid);
-
-        mCapture.setOnClickListener(view -> {
-            IntentIntegrator integrator = new IntentIntegrator(com.example.arcore_navigation_ce.SourceDetection.this);
-            integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-            integrator.setPrompt("Scan");
-            integrator.setCameraId(0);
-            integrator.setBeepEnabled(false);
-            integrator.setBarcodeImageEnabled(false);
-            integrator.initiateScan();
-
-        });
+//        mCapture = (Button) findViewById(R.id.capturebtnid);
+//        mDetect = (Button) findViewById(R.id.detectbtnid);
+////        mGallery = (Button) findViewById(R.id.selectbtnid);
+//
+//        mCapture.setOnClickListener(view -> {
+//            IntentIntegrator integrator = new IntentIntegrator(com.example.arcore_navigation_ce.SourceDetection.this);
+//            integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
+//            integrator.setPrompt("Scan");
+//            integrator.setCameraId(0);
+//            integrator.setBeepEnabled(false);
+//            integrator.setBarcodeImageEnabled(false);
+//            integrator.initiateScan();
+//
+//        });
 
         mDetect.setOnClickListener(new View.OnClickListener() {
             @Override

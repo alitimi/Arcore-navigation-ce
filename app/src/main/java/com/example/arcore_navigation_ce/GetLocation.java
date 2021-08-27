@@ -38,6 +38,7 @@ public class GetLocation extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_PERMISSIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_destinations_list2);
 
@@ -46,6 +47,7 @@ public class GetLocation extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 String itemValue = (String) listView.getItemAtPosition(position);
                 String values = ((TextView) view).getText().toString();
                 destination = values;
