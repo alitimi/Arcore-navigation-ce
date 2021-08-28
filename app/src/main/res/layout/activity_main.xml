@@ -16,17 +16,6 @@
         android:clipChildren="false"
         android:clipToPadding="false">
 
-        <!--        <com.google.android.material.navigation.NavigationView-->
-        <!--            android:id="@+id/navigation_view"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="match_parent"-->
-        <!--            android:layout_gravity="end"-->
-        <!--            android:foregroundGravity="right"-->
-        <!--            app:headerLayout="@layout/navigation_header"-->
-        <!--            app:menu="@menu/navigation_drawer"-->
-        <!--            android:layoutDirection="rtl"-->
-        <!--            android:textDirection="rtl"/>-->
-
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_height="wrap_content"
@@ -38,10 +27,6 @@
             android:elevation="0dp"
             app:menu="@menu/menu_main"
             app:contentInsetStartWithNavigation="0dp" />
-        <!--        <include layout="@layout/toolbar"/>-->
-
-
-
 
         <LinearLayout
             android:orientation="vertical"
@@ -92,33 +77,6 @@
             android:clipToPadding="false"
             android:layoutDirection="ltr">
 
-            <!--            <ImageButton-->
-            <!--                android:src="@drawable/button_policyholder"-->
-            <!--                android:layout_width="80dp"-->
-            <!--                android:layout_height="45dp"-->
-            <!--                android:adjustViewBounds="true"-->
-            <!--                android:scaleType="fitXY"-->
-            <!--                android:maxWidth="42dp"-->
-            <!--                android:maxHeight="42dp"-->
-            <!--                android:id="@+id/button_policyholder"-->
-            <!--                android:background="@null"/>-->
-            <!--&lt;!&ndash;            app:MvxBind="Click ShowPolicyholderHome"&ndash;&gt;-->
-
-            <!--            <ImageButton-->
-            <!--                android:id="@+id/button_darkhast"-->
-            <!--                android:layout_width="80dp"-->
-            <!--                android:layout_height="45dp"-->
-            <!--                android:adjustViewBounds="true"-->
-            <!--                android:scaleType="fitXY"-->
-            <!--                android:maxWidth="42dp"-->
-            <!--                android:maxHeight="42dp"-->
-            <!--                android:layout_marginStart="-30dp"-->
-            <!--                android:layout_marginTop="50dp"-->
-            <!--                android:layout_toRightOf="@id/button_policyholder"-->
-            <!--                android:src="@drawable/button_darkhast"-->
-            <!--                android:background="@null"/>-->
-            <!--&lt;!&ndash;            app:MvxBind="Click ShowStock"&ndash;&gt;-->
-
             <ImageButton
                 android:id="@+id/ar_navigation"
                 android:layout_width="60dp"
@@ -132,7 +90,6 @@
                 android:src="@drawable/vr"
                 android:background="@null"/>
 
-            <!--            app:MvxBind="Click ShowPolicyOrderItems"-->
 
             <TextView
                 android:id="@+id/clubText"
@@ -165,33 +122,7 @@
                 android:text="@string/OutdoorNavigation" />
 
 
-            <!--            <ImageButton-->
-            <!--                android:src="@drawable/button_medicalcenters"-->
-            <!--                android:layout_width="80dp"-->
-            <!--                android:layout_height="45dp"-->
-            <!--                android:adjustViewBounds="true"-->
-            <!--                android:scaleType="fitXY"-->
-            <!--                android:maxWidth="42dp"-->
-            <!--                android:maxHeight="42dp"-->
-            <!--                android:id="@+id/button_medicalcenters"-->
-            <!--                android:layout_alignParentEnd="true"-->
-            <!--                android:background="@null"/>-->
-            <!--&lt;!&ndash;            app:MvxBind="Click ShowMedicalCenters"&ndash;&gt;-->
 
-            <!--            <ImageButton-->
-            <!--                android:src="@drawable/button_agents"-->
-            <!--                android:layout_width="80dp"-->
-            <!--                android:layout_height="45dp"-->
-            <!--                android:adjustViewBounds="true"-->
-            <!--                android:scaleType="fitXY"-->
-            <!--                android:maxWidth="42dp"-->
-            <!--                android:maxHeight="42dp"-->
-            <!--                android:layout_toLeftOf="@id/button_medicalcenters"-->
-            <!--                android:id="@+id/button_agents"-->
-            <!--                android:layout_marginTop="50dp"-->
-            <!--                android:layout_marginEnd="-30dp"-->
-            <!--                android:background="@null"/>-->
-            <!--            app:MvxBind="Click ShowAgents"-->
         </RelativeLayout>
 
 
@@ -230,8 +161,6 @@
                     android:layout_marginTop="-4dp"
                     android:visibility="gone"
                     android:textColor="@color/darkBlue" />
-                <!--                android:text="علیرضا دانش پژوه"-->
-                <!--                app:MvxBind="Text UserDisplayName"-->
             </LinearLayout>
         </FrameLayout>
 
@@ -267,45 +196,6 @@
                 android:maxHeight="30dp"
                 android:id="@+id/button_contact"
                 android:background="@null"/>
-            <!--            app:MvxBind="Click ShowContactUs"-->
-
-            <!--            <ImageButton-->
-            <!--                android:src="@drawable/image"-->
-            <!--                android:layout_width="60dp"-->
-            <!--                android:layout_height="30dp"-->
-            <!--                android:adjustViewBounds="true"-->
-            <!--                android:scaleType="fitXY"-->
-            <!--                android:maxWidth="60dp"-->
-            <!--                android:maxHeight="30dp"-->
-            <!--                android:id="@+id/button_stock"-->
-            <!--                android:layout_marginStart="8dp"-->
-            <!--                android:background="@null"/>-->
-
-            <!--            <ImageButton-->
-            <!--                android:id="@+id/button_about"-->
-            <!--                android:layout_width="60dp"-->
-            <!--                android:layout_height="30dp"-->
-            <!--                android:adjustViewBounds="true"-->
-            <!--                android:scaleType="fitXY"-->
-            <!--                android:maxWidth="60dp"-->
-            <!--                android:maxHeight="30dp"-->
-            <!--                android:layout_marginStart="8dp"-->
-            <!--                android:src="@drawable/button_club"-->
-            <!--                android:background="@null"/>-->
-            <!--            app:MvxBind="Click ShowClub"-->
-
-            <!--            <ImageButton-->
-            <!--                android:src="@drawable/button_help2"-->
-            <!--                android:layout_width="60dp"-->
-            <!--                android:layout_height="30dp"-->
-            <!--                android:adjustViewBounds="true"-->
-            <!--                android:scaleType="fitXY"-->
-            <!--                android:maxWidth="60dp"-->
-            <!--                android:maxHeight="30dp"-->
-            <!--                android:id="@+id/button_help2"-->
-            <!--                android:layout_marginStart="8dp"-->
-            <!--                android:background="@null"/>-->
-            <!--            app:MvxBind="Click ShowHelp"-->
 
             <ImageButton
                 android:src="@drawable/button_map"
@@ -332,14 +222,5 @@
         app:menu="@menu/navigation_drawer"
         android:layoutDirection="rtl"
         android:textDirection="rtl"/>
-
-    <!--    <com.google.android.material.navigation.NavigationView-->
-    <!--        android:id="@+id/navigation_view"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_gravity="start"-->
-    <!--        app:headerLayout="@layout/navigation_header"-->
-    <!--        app:menu="@menu/navigation_drawer"-->
-    <!--        app:itemIconTint="@color/darkBlue" />-->
 </androidx.drawerlayout.widget.DrawerLayout>
 

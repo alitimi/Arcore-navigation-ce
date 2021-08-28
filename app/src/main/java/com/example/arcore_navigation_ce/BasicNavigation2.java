@@ -81,7 +81,8 @@ public class BasicNavigation2 extends AppCompatActivity {
         destLatLong = b.getString("destLatLong");
 
         try {
-            Root root = ServiceModule.providePlaceService().getRoute(origin, "car", destLatLong).subscribeOn(Schedulers.io()).blockingFirst();
+            Root root = ServiceModule.providePlaceService().getRoute(origin, "car", destLatLong)
+                    .subscribeOn(Schedulers.io()).blockingFirst();
             for (int i = 0; i < root.routes.get(0).legs.get(0).steps.size(); i++) {
                 index_instruction.add(root.routes.get(0).legs.get(0).steps.get(i).instruction);
                 index_location.add(root.routes.get(0).legs.get(0).steps.get(i).start_location.get(0) +
@@ -150,7 +151,9 @@ public class BasicNavigation2 extends AppCompatActivity {
         String[] loc = index_location.get(j).split(",");
         location.setLatitude(Double.parseDouble(loc[1]));
         location.setLongitude(Double.parseDouble(loc[0]));
-        double distanceInMetersOne = meterDistanceBetweenPoints(Float.parseFloat(String.valueOf(user.getLatitude())), Float.parseFloat(String.valueOf(user.getLongitude())), Float.valueOf(String.valueOf(location.getLatitude())), Float.valueOf(String.valueOf(location.getLongitude())));
+        double distanceInMetersOne = meterDistanceBetweenPoints(Float.parseFloat(
+                String.valueOf(user.getLatitude())), Float.parseFloat(String.valueOf(user.getLongitude())),
+                Float.parseFloat(String.valueOf(location.getLatitude())), Float.parseFloat(String.valueOf(location.getLongitude())));
         if (distanceInMetersOne <= 3.0) {
             Toast.makeText(this, index_instruction.get(j) + "\n" + distanceInMetersOne, Toast.LENGTH_SHORT).show();
             j++;

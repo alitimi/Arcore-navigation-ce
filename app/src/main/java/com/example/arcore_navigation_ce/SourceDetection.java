@@ -26,24 +26,10 @@ import androidx.core.content.ContextCompat;
 
 public class SourceDetection extends AppCompatActivity {
 
-    Button mCapture,mDetect,mGallery;
-
+    Button mDetect;
     ArFragment fragment;
-    private PointerDrawable pointer = new PointerDrawable();
-    private boolean isTracking;
-    private boolean isHitting;
-
-    private int mSourceDetectedFlag = 0, mCapturedFlag = 0, mGallerySelectFlag = 0;
     String place;
-    private Bitmap mBitmap;
-    Uri uri;
-    String picpath = "",mSrc,mDest;
-    List<String> mNavInstructions;
-    static int mProceedFlag=0;
-    private SensorManager sensorManager;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    static final int PICK_IMAGE = 7;
-    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
 
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -51,7 +37,6 @@ public class SourceDetection extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_source_detection);
-
         //Camera Permissions
         if (ContextCompat.checkSelfPermission(com.example.arcore_navigation_ce.SourceDetection.this,
                 Manifest.permission.CAMERA)
@@ -59,22 +44,6 @@ public class SourceDetection extends AppCompatActivity {
             ActivityCompat.requestPermissions(com.example.arcore_navigation_ce.SourceDetection.this,
                     new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
         }
-
-//        mCapture = (Button) findViewById(R.id.capturebtnid);
-//        mDetect = (Button) findViewById(R.id.detectbtnid);
-////        mGallery = (Button) findViewById(R.id.selectbtnid);
-//
-//        mCapture.setOnClickListener(view -> {
-//            IntentIntegrator integrator = new IntentIntegrator(com.example.arcore_navigation_ce.SourceDetection.this);
-//            integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-//            integrator.setPrompt("Scan");
-//            integrator.setCameraId(0);
-//            integrator.setBeepEnabled(false);
-//            integrator.setBarcodeImageEnabled(false);
-//            integrator.initiateScan();
-//
-//        });
-
         mDetect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,8 +60,8 @@ public class SourceDetection extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null) {
-            if(result.getContents() == null) {
+        if (result != null) {
+            if (result.getContents() == null) {
                 Log.e("Scan*******", "Cancelled scan");
             } else {
                 Log.e("Scan", "Scanned");

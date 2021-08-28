@@ -157,10 +157,13 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
 
         //Sensors
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        Sensor stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+
         Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         Sensor magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        Sensor stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+
         Sensor stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
         simpleStepDetector = new com.example.arcore_navigation_ce.StepDetector();
 //        simpleStepDetector.registerListener(this);
         numSteps = 0;
@@ -169,7 +172,7 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
         sensorManager.registerListener(com.example.arcore_navigation_ce.BasicNavigation.this, magnetometer,
                 SensorManager.SENSOR_DELAY_UI);
         sensorManager.registerListener(com.example.arcore_navigation_ce.BasicNavigation.this, stepDetector, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(com.example.arcore_navigation_ce.BasicNavigation.this, stepCounter, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(com.example.arcore_navigation_ce.BasicNavigation.this, stepCounter, SensorManager.SENSOR_DELAY_UI);
         mListenerRegistered = 1;
     }
 
