@@ -1,6 +1,7 @@
 package com.example.arcore_navigation_ce;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -118,7 +119,7 @@ public class BasicNavigation2 extends AppCompatActivity {
                         handler.postDelayed(this, 10000);
                         if (index_maneuvers.get(j).equals("depart")) {
                             Toast.makeText(BasicNavigation2.this, "depart", Toast.LENGTH_SHORT).show();
-                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
                         }
                         if (index_maneuvers.get(j).equals("right")) {
                             Toast.makeText(BasicNavigation2.this, "right", Toast.LENGTH_SHORT).show();
@@ -126,7 +127,7 @@ public class BasicNavigation2 extends AppCompatActivity {
                         }
                         if (index_maneuvers.get(j).equals("left")) {
                             Toast.makeText(BasicNavigation2.this, "left", Toast.LENGTH_SHORT).show();
-                            addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
                         }
                         if (index_maneuvers.get(j).equals("uturn")) {
                             Toast.makeText(BasicNavigation2.this, "uturn", Toast.LENGTH_SHORT).show();
@@ -158,6 +159,8 @@ public class BasicNavigation2 extends AppCompatActivity {
             Toast.makeText(this, index_instruction.get(j) + "\n" + distanceInMetersOne, Toast.LENGTH_SHORT).show();
             j++;
         }
+        Toast.makeText(this, index_instruction.get(j) + "\n" + distanceInMetersOne, Toast.LENGTH_SHORT).show();
+
     }
 
     private double meterDistanceBetweenPoints(float lat_a, float lng_a, float lat_b, float lng_b) {
@@ -305,6 +308,16 @@ public class BasicNavigation2 extends AppCompatActivity {
     private android.graphics.Point getScreenCenter() {
         View vw = findViewById(android.R.id.content);
         return new android.graphics.Point(vw.getWidth() / 2, vw.getHeight() / 2);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        finish();
+        Intent intent = new Intent(BasicNavigation2.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        super.onBackPressed();// optional depending on your needs
     }
 
     //----------------------------------------------------------------------------------------------

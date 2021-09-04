@@ -1,5 +1,6 @@
 package com.example.arcore_navigation_ce;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -42,7 +44,7 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
 
     private com.example.arcore_navigation_ce.StepDetector simpleStepDetector;
     private SensorManager sensorManager;
-    private int numSteps;
+    private int numSteps = 0;
     private ArFragment fragment;
 
     String source;
@@ -75,6 +77,7 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
     private boolean mLastAccelerometerSet = false;
     private boolean mLastMagnetometerSet = false;
 
+    final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
     float[] rMat = new float[9];
     float[] orientation = new float[3];
     int mAbsoluteDir;
@@ -96,7 +99,7 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_source_detection);
-
+        requestPermissions(new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, REQUEST_CODE_ASK_PERMISSIONS);
 //        done = findViewById(R.id.done);
 //        done.setOnClickListener(view -> {
 //            Toast.makeText(com.example.arcore_navigation_ce.BasicNavigation.this, "Steps : " + numSteps, Toast.LENGTH_SHORT).show();
@@ -201,8 +204,11 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
             mAbsoluteDir = getRange(Math.round(mAbsoluteDir));
         }
 
+        Log.e("ALi", "sensor");
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
-            numSteps += (int) event.values[0];
+            numSteps++;
+            Log.e("ALi", "step" + numSteps);
+            Toast.makeText(BasicNavigation.this, String.valueOf(numSteps), Toast.LENGTH_SHORT).show();
             if (index < myPath.size()) {
                 String[] strings = myPath.get(index).split(" ");
                 Integer key = Integer.valueOf(strings[0]);

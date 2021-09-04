@@ -15,7 +15,9 @@
         <activity android:name="com.example.arcore_navigation_ce.Destination" />
         <activity android:name="com.example.arcore_navigation_ce.GetLocation" />
         <activity android:name=".BasicNavigation" />
-        <activity android:name=".BasicNavigation2" />
+        <activity android:name=".BasicNavigation2"
+            android:noHistory= "true">
+        </activity>
         <activity android:name="com.example.arcore_navigation_ce.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +43,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-permission android:name="android.permission.VIBRATE" />
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>
