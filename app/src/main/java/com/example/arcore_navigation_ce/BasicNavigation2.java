@@ -79,6 +79,7 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
     ArrayList<String> index_instruction = new ArrayList<>();
     ArrayList<String> index_maneuvers = new ArrayList<>();
 
+    boolean notDoneShape = false;
 
 
     Runnable runnable;
@@ -252,11 +253,21 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
                                 }
                                 if (index_maneuvers.get(j).equals("right")) {
                                     Toast.makeText(BasicNavigation2.this, "right", Toast.LENGTH_SHORT).show();
-                                    addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                                    if (notDoneShape) {
+                                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                                    }
+                                    if (!notDoneShape) {
+                                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                                    }
                                 }
                                 if (index_maneuvers.get(j).equals("left")) {
                                     Toast.makeText(BasicNavigation2.this, "left", Toast.LENGTH_SHORT).show();
-                                    addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                                    if (notDoneShape) {
+                                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                                    }
+                                    if (!notDoneShape) {
+                                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                                    }
                                 }
                                 if (index_maneuvers.get(j).equals("uturn")) {
                                     Toast.makeText(BasicNavigation2.this, "uturn", Toast.LENGTH_SHORT).show();
@@ -293,6 +304,7 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
         if (j != index_location.size()) {
             if (distanceInMetersOne >= 2.0 && distanceInMetersOne <= 10.0) {
 //            Toast.makeText(this, index_instruction.get(j) + "\n" + distanceInMetersOne, Toast.LENGTH_SHORT).show();
+                notDoneShape = true;
                 j++;
             }
             Toast.makeText(this, index_instruction.get(j) + "\n" + Math.round(distanceInMetersOne), Toast.LENGTH_SHORT).show();
