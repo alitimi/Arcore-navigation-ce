@@ -194,7 +194,7 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
             mAbsoluteDir = getRange(Math.round(mAbsoluteDir));
         }
 
-        Log.e("ALi", "sensor");
+//        Log.e("ALi", "sensor");
         if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
             numSteps++;
             Log.e("ALi", "step" + numSteps);
@@ -513,6 +513,15 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
     private android.graphics.Point getScreenCenter() {
         View vw = findViewById(android.R.id.content);
         return new android.graphics.Point(vw.getWidth() / 2, vw.getHeight() / 2);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // code here to show dialog
+        Intent intent = new Intent(BasicNavigation.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);// optional depending on your needs
+        finish();
     }
 
 }

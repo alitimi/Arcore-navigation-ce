@@ -2,6 +2,9 @@ package com.example.arcore_navigation_ce;
 
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -36,9 +39,22 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import io.reactivex.schedulers.Schedulers;
 
-public class BasicNavigation2 extends AppCompatActivity {
+public class BasicNavigation2 extends AppCompatActivity implements SensorEventListener {
 
+    private SensorManager SensorManage;
+    private com.example.arcore_navigation_ce.StepDetector simpleStepDetector;
     private SensorManager sensorManager;
+    private final float[] mLastAccelerometer = new float[3];
+    private final float[] mLastMagnetometer = new float[3];
+    private boolean mLastAccelerometerSet = false;
+    private boolean mLastMagnetometerSet = false;
+
+    final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
+    float[] rMat = new float[9];
+    float[] orientation = new float[3];
+    int mAbsoluteDir;
+    // record the angle turned of the compass picture
+    private float DegreeStart = 0f;
     private ArFragment fragment;
     String origin;
     String destLatLong;
@@ -53,6 +69,7 @@ public class BasicNavigation2 extends AppCompatActivity {
 
     int count = 0;
 
+    boolean run =true;
     Vibrator v;
     Button done;
 
@@ -63,7 +80,37 @@ public class BasicNavigation2 extends AppCompatActivity {
     ArrayList<String> index_maneuvers = new ArrayList<>();
 
 
-    public BasicNavigation2() throws JSONException {
+
+    Runnable runnable;
+
+    public BasicNavigation2(){
+
+
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+//        float degree = Math.round(event.values[0]);
+//        DegreeStart = getRange((int) ((-degree + 360) %360));
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            simpleStepDetector.updateAccelerometer(
+                    event.timestamp, event.values[0], event.values[1], event.values[2]);
+        }
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            simpleStepDetector.updateAccelerometer(
+                    event.timestamp, event.values[0], event.values[1], event.values[2]);
+            System.arraycopy(event.values, 0, mLastAccelerometer, 0, event.values.length);
+            mLastAccelerometerSet = true;
+        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            System.arraycopy(event.values, 0, mLastMagnetometer, 0, event.values.length);
+            mLastMagnetometerSet = true;
+        }
+        if (mLastAccelerometerSet && mLastMagnetometerSet) {
+            SensorManager.getRotationMatrix(rMat, null, mLastAccelerometer, mLastMagnetometer);
+            SensorManager.getOrientation(rMat, orientation);
+            mAbsoluteDir = (int) (Math.toDegrees(SensorManager.getOrientation(rMat, orientation)[0]) + 360) % 360;
+            mAbsoluteDir = getRange(Math.round(mAbsoluteDir));
+        }
     }
 
 
@@ -75,6 +122,17 @@ public class BasicNavigation2 extends AppCompatActivity {
         setContentView(R.layout.activity_source_detection);
 
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        Sensor magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        simpleStepDetector = new com.example.arcore_navigation_ce.StepDetector();
+//        simpleStepDetector.registerListener(this);
+        sensorManager.registerListener(com.example.arcore_navigation_ce.BasicNavigation2.this, accelerometer,
+                SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(com.example.arcore_navigation_ce.BasicNavigation2.this, magnetometer,
+                SensorManager.SENSOR_DELAY_UI);
+
 
         //Source and Destination String
         Bundle b = getIntent().getExtras();
@@ -108,30 +166,106 @@ public class BasicNavigation2 extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        GPSTracker gpsTracker = new GPSTracker(BasicNavigation2.this);
-                        if (gpsTracker.canGetLocation()) {
-                            latitude = gpsTracker.getLatitude();
-                            longitude = gpsTracker.getLongitude();
-                            startNavigation();
-                        } else {
-                            gpsTracker.showSettingsAlert();
-                        }
-                        handler.postDelayed(this, 10000);
-                        if (index_maneuvers.get(j).equals("depart")) {
-                            Toast.makeText(BasicNavigation2.this, "depart", Toast.LENGTH_SHORT).show();
-                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-                        }
-                        if (index_maneuvers.get(j).equals("right")) {
-                            Toast.makeText(BasicNavigation2.this, "right", Toast.LENGTH_SHORT).show();
-                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-                        }
-                        if (index_maneuvers.get(j).equals("left")) {
-                            Toast.makeText(BasicNavigation2.this, "left", Toast.LENGTH_SHORT).show();
-                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-                        }
-                        if (index_maneuvers.get(j).equals("uturn")) {
-                            Toast.makeText(BasicNavigation2.this, "uturn", Toast.LENGTH_SHORT).show();
-                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                        if (run) {
+                            GPSTracker gpsTracker = new GPSTracker(BasicNavigation2.this);
+                            if (gpsTracker.canGetLocation()) {
+                                latitude = gpsTracker.getLatitude();
+                                longitude = gpsTracker.getLongitude();
+                                startNavigation();
+                            } else {
+                                gpsTracker.showSettingsAlert();
+                            }
+                            handler.postDelayed(this, 10000);
+                            if (index_maneuvers.get(j).equals("depart")) {
+                                Toast.makeText(BasicNavigation2.this, String.valueOf(mAbsoluteDir), Toast.LENGTH_SHORT).show();
+                                if (mAbsoluteDir == 2) {
+                                    if (index_instruction.get(j).contains("شمال")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                                    }
+                                    if (index_instruction.get(j).contains("جنوب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart جنوب", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                                    }
+                                    if (index_instruction.get(j).contains("غرب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart غرب", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                                    }
+                                    if (index_instruction.get(j).contains("شرق")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شرق", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                                    }
+                                }
+                                if (mAbsoluteDir == 4) {
+                                    if (index_instruction.get(j).contains("شمال")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                                    }
+                                    if (index_instruction.get(j).contains("شرق")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شرق", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                                    }
+                                    if (index_instruction.get(j).contains("جنوب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart جنوب", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                                    }
+                                    if (index_instruction.get(j).contains("غرب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart غرب", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                                    }
+                                }
+                                if (mAbsoluteDir == 1) {
+                                    if (index_instruction.get(j).contains("شرق")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شرق", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                                    }
+                                    if (index_instruction.get(j).contains("جنوب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart جنوب", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                                    }
+                                    if (index_instruction.get(j).contains("غرب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart غرب", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                                    }
+                                    if (index_instruction.get(j).contains("شمال")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                                    }
+                                }
+                                if (mAbsoluteDir == 3) {
+                                    if (index_instruction.get(j).contains("شمال")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                                    }
+                                    if (index_instruction.get(j).contains("شرق")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شرق", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                                    }
+                                    if (index_instruction.get(j).contains("غرب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart غرب", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                                    }
+                                    if (index_instruction.get(j).contains("جنوب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart جنوب", Toast.LENGTH_SHORT).show();
+                                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                                    }
+                                }
+                                if (mAbsoluteDir == 0) {
+                                    Toast.makeText(BasicNavigation2.this, "در حال تشخیص جهت جغرافیایی", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            if (index_maneuvers.get(j).equals("right")) {
+                                Toast.makeText(BasicNavigation2.this, "right", Toast.LENGTH_SHORT).show();
+                                addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                            }
+                            if (index_maneuvers.get(j).equals("left")) {
+                                Toast.makeText(BasicNavigation2.this, "left", Toast.LENGTH_SHORT).show();
+                                addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                            }
+                            if (index_maneuvers.get(j).equals("uturn")) {
+                                Toast.makeText(BasicNavigation2.this, "uturn", Toast.LENGTH_SHORT).show();
+                                addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                            }
                         }
                     }
 
@@ -139,30 +273,29 @@ public class BasicNavigation2 extends AppCompatActivity {
 
             }
         }
-//        test();
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void startNavigation() {
+
         Location user = new Location("");
         user.setLatitude(latitude);
         user.setLongitude(longitude);
         Location location = new Location("");
-        String[] loc = index_location.get(j).split(",");
+        String[] loc = index_location.get(j+1).split(",");
         location.setLatitude(Double.parseDouble(loc[1]));
         location.setLongitude(Double.parseDouble(loc[0]));
         double distanceInMetersOne = meterDistanceBetweenPoints(Float.parseFloat(
                 String.valueOf(user.getLatitude())), Float.parseFloat(String.valueOf(user.getLongitude())),
                 Float.parseFloat(String.valueOf(location.getLatitude())), Float.parseFloat(String.valueOf(location.getLongitude())));
         if (j != index_location.size()) {
-            if (distanceInMetersOne <= 3.0) {
+            if (distanceInMetersOne >= 2.0 && distanceInMetersOne <= 3.0) {
 //            Toast.makeText(this, index_instruction.get(j) + "\n" + distanceInMetersOne, Toast.LENGTH_SHORT).show();
                 j++;
             }
-            Toast.makeText(this, index_instruction.get(j) + "\n" + distanceInMetersOne, Toast.LENGTH_SHORT).show();
-        }
-        else {
+            Toast.makeText(this, index_instruction.get(j) + "\n" + Math.round(distanceInMetersOne), Toast.LENGTH_SHORT).show();
+        } else {
             Toast.makeText(this, "شما به مقصد رسیده اید.", Toast.LENGTH_SHORT).show();
         }
 
@@ -313,13 +446,19 @@ public class BasicNavigation2 extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed()
-    {
-        finish();
+    public void onBackPressed() {
+        // code here to show dialog
+        run = false;
         Intent intent = new Intent(BasicNavigation2.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(intent);
-        super.onBackPressed();// optional depending on your needs
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);// optional depending on your needs
+        finish();
+    }
+
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 
     //----------------------------------------------------------------------------------------------
