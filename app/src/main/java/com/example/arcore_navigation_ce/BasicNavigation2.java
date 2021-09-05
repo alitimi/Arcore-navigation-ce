@@ -171,101 +171,102 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
                             if (gpsTracker.canGetLocation()) {
                                 latitude = gpsTracker.getLatitude();
                                 longitude = gpsTracker.getLongitude();
+                                handler.postDelayed(this, 10000);
+                                if (index_maneuvers.get(j).equals("depart")) {
+                                    Toast.makeText(BasicNavigation2.this, String.valueOf(mAbsoluteDir), Toast.LENGTH_SHORT).show();
+                                    if (mAbsoluteDir == 2) {
+                                        if (index_instruction.get(j).contains("شمال")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                                        }
+                                        if (index_instruction.get(j).contains("جنوب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart جنوب", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                                        }
+                                        if (index_instruction.get(j).contains("غرب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart غرب", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                                        }
+                                        if (index_instruction.get(j).contains("شرق")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شرق", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                                        }
+                                    }
+                                    if (mAbsoluteDir == 4) {
+                                        if (index_instruction.get(j).contains("شمال")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                                        }
+                                        if (index_instruction.get(j).contains("شرق")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شرق", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                                        }
+                                        if (index_instruction.get(j).contains("جنوب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart جنوب", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                                        }
+                                        if (index_instruction.get(j).contains("غرب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart غرب", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                                        }
+                                    }
+                                    if (mAbsoluteDir == 1) {
+                                        if (index_instruction.get(j).contains("شرق")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شرق", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                                        }
+                                        if (index_instruction.get(j).contains("جنوب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart جنوب", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                                        }
+                                        if (index_instruction.get(j).contains("غرب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart غرب", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                                        }
+                                        if (index_instruction.get(j).contains("شمال")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                                        }
+                                    }
+                                    if (mAbsoluteDir == 3) {
+                                        if (index_instruction.get(j).contains("شمال")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                                        }
+                                        if (index_instruction.get(j).contains("شرق")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart شرق", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                                        }
+                                        if (index_instruction.get(j).contains("غرب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart غرب", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                                        }
+                                        if (index_instruction.get(j).contains("جنوب")) {
+//                                    Toast.makeText(BasicNavigation2.this, "depart جنوب", Toast.LENGTH_SHORT).show();
+                                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                                        }
+                                    }
+                                    if (mAbsoluteDir == 0) {
+                                        Toast.makeText(BasicNavigation2.this, "در حال تشخیص جهت جغرافیایی", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                if (index_maneuvers.get(j).equals("right")) {
+                                    Toast.makeText(BasicNavigation2.this, "right", Toast.LENGTH_SHORT).show();
+                                    addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                                }
+                                if (index_maneuvers.get(j).equals("left")) {
+                                    Toast.makeText(BasicNavigation2.this, "left", Toast.LENGTH_SHORT).show();
+                                    addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                                }
+                                if (index_maneuvers.get(j).equals("uturn")) {
+                                    Toast.makeText(BasicNavigation2.this, "uturn", Toast.LENGTH_SHORT).show();
+                                    addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                                }
                                 startNavigation();
                             } else {
                                 gpsTracker.showSettingsAlert();
                             }
-                            handler.postDelayed(this, 10000);
-                            if (index_maneuvers.get(j).equals("depart")) {
-                                Toast.makeText(BasicNavigation2.this, String.valueOf(mAbsoluteDir), Toast.LENGTH_SHORT).show();
-                                if (mAbsoluteDir == 2) {
-                                    if (index_instruction.get(j).contains("شمال")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-                                    }
-                                    if (index_instruction.get(j).contains("جنوب")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart جنوب", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-                                    }
-                                    if (index_instruction.get(j).contains("غرب")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart غرب", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
-                                    }
-                                    if (index_instruction.get(j).contains("شرق")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart شرق", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-                                    }
-                                }
-                                if (mAbsoluteDir == 4) {
-                                    if (index_instruction.get(j).contains("شمال")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-                                    }
-                                    if (index_instruction.get(j).contains("شرق")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart شرق", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
-                                    }
-                                    if (index_instruction.get(j).contains("جنوب")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart جنوب", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-                                    }
-                                    if (index_instruction.get(j).contains("غرب")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart غرب", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-                                    }
-                                }
-                                if (mAbsoluteDir == 1) {
-                                    if (index_instruction.get(j).contains("شرق")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart شرق", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-                                    }
-                                    if (index_instruction.get(j).contains("جنوب")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart جنوب", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
-                                    }
-                                    if (index_instruction.get(j).contains("غرب")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart غرب", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-                                    }
-                                    if (index_instruction.get(j).contains("شمال")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-                                    }
-                                }
-                                if (mAbsoluteDir == 3) {
-                                    if (index_instruction.get(j).contains("شمال")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
-                                    }
-                                    if (index_instruction.get(j).contains("شرق")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart شرق", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-                                    }
-                                    if (index_instruction.get(j).contains("غرب")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart غرب", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-                                    }
-                                    if (index_instruction.get(j).contains("جنوب")) {
-//                                    Toast.makeText(BasicNavigation2.this, "depart جنوب", Toast.LENGTH_SHORT).show();
-                                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-                                    }
-                                }
-                                if (mAbsoluteDir == 0) {
-                                    Toast.makeText(BasicNavigation2.this, "در حال تشخیص جهت جغرافیایی", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                            if (index_maneuvers.get(j).equals("right")) {
-                                Toast.makeText(BasicNavigation2.this, "right", Toast.LENGTH_SHORT).show();
-                                addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-                            }
-                            if (index_maneuvers.get(j).equals("left")) {
-                                Toast.makeText(BasicNavigation2.this, "left", Toast.LENGTH_SHORT).show();
-                                addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-                            }
-                            if (index_maneuvers.get(j).equals("uturn")) {
-                                Toast.makeText(BasicNavigation2.this, "uturn", Toast.LENGTH_SHORT).show();
-                                addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-                            }
+
                         }
                     }
 
@@ -290,7 +291,7 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
                 String.valueOf(user.getLatitude())), Float.parseFloat(String.valueOf(user.getLongitude())),
                 Float.parseFloat(String.valueOf(location.getLatitude())), Float.parseFloat(String.valueOf(location.getLongitude())));
         if (j != index_location.size()) {
-            if (distanceInMetersOne >= 2.0 && distanceInMetersOne <= 3.0) {
+            if (distanceInMetersOne >= 2.0 && distanceInMetersOne <= 10.0) {
 //            Toast.makeText(this, index_instruction.get(j) + "\n" + distanceInMetersOne, Toast.LENGTH_SHORT).show();
                 j++;
             }
