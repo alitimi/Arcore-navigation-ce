@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -29,7 +30,7 @@ import java.text.StringCharacterIterator;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    SharedPreferences sharedPreferences ;
+    SharedPreferences sharedPreferences;
 
     public NavigationView navigationView = null;
     private DrawerLayout drawer;
@@ -146,12 +147,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater findMenuItems = getMenuInflater();
         findMenuItems.inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
     private void loadHomeFragment() {
         // selecting appropriate nav menu item
         selectNavMenu();
@@ -172,29 +175,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void run() {
                 int num = getHome(navItemIndex);
-                if (num == 1){
+                if (num == 1) {
 //                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
 //                    startActivity(intent);
-                } else if (num == 2){
+                } else if (num == 2) {
                     try {
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                         shareIntent.setType("text/plain");
                         shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                        String shareMessage= "\nLet me recommend you this application\n\n";
+                        String shareMessage = "\nLet me recommend you this application\n\n";
                         shareMessage = "https://cafebazaar.ir/app/com/sarmad.insurance/?l=fa";
 //                        + BuildConfig.APPLICATION_ID +"\n\n"
                         shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                         startActivity(Intent.createChooser(shareIntent, "choose one"));
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         //e.toString();
                     }
-                } else if (num == 3){
+                } else if (num == 3) {
 //                    Intent intent = new Intent(MainActivity.this, ContactUsActivity.class);
 //                    startActivity(intent);
-                } else if (num == 4){
+                } else if (num == 4) {
 //                    Intent intent = new Intent(MainActivity.this, QuestionsActivity.class);
 //                    startActivity(intent);
-                } else if (num == 5){
+                } else if (num == 5) {
                     sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
                     SharedPreferences.Editor prefEditor = sharedPreferences.edit();
                     prefEditor.putString("firstName", null);
@@ -309,6 +312,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 drawer.closeDrawer(drawerView);
 
             }
+
             @Override
             public void onDrawerOpened(View drawerView) {
                 // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
@@ -350,10 +354,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            if(drawer.isDrawerOpen(Gravity.RIGHT) ) {
+            if (drawer.isDrawerOpen(Gravity.RIGHT)) {
                 drawer.closeDrawer(Gravity.RIGHT);
-            }
-            else {
+            } else {
                 drawer.openDrawer(Gravity.RIGHT);
             }
             return true;
@@ -362,212 +365,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onPointerCaptureChanged(boolean hasCapture) { }
+    public void onPointerCaptureChanged(boolean hasCapture) {
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         return false;
     }
-
-//    private void myAsyncTak() {
-//        // TODO Auto-generated method stub
-//        Runnable runnable = new Runnable() {
-//
-//            @Override
-//            public void run() {
-//
-//                // TODO Auto-generated method stub
-//
-//                try {
-//                    URL url = new URL("https://accident.sarmadins.ir/announce-accident"); //Enter URL here
-//                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-//                    httpURLConnection.setDoOutput(true);
-//                    httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.
-//                    httpURLConnection.setRequestProperty("Content-Type", "application/json"); // here you are setting the `Content-Type` for the data you are sending which is `application/json`
-//                    httpURLConnection.connect();
-//
-//                    DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
-//                    wr.writeBytes(
-//                            "{\n" +
-//                            "  \"documents\": [\n" +
-//                            "  ],\n" +
-//                            "  \"damageds\": [\n" +
-//                            "    {\n" +
-//                            "      \"insuranceCode\": \"string\",\n" +
-//                            "      \"insuranceStart\": \"2020-08-09T10:12:32.764Z\",\n" +
-//                            "      \"insuranceEnd\": \"2020-08-09T10:12:32.764Z\",\n" +
-//                            "      \"carType\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
-//                            "      \"carModel\": 0,\n" +
-//                            "      \"carColor\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
-//                            "      \"chassisCode\": \"string\",\n" +
-//                            "      \"regPlate\": \"string\",\n" +
-//                            "      \"motorCode\": \"string\",\n" +
-//                            "      \"driverFName\": \"string\",\n" +
-//                            "      \"driverLName\": \"string\",\n" +
-//                            "      \"driverFatherName\": \"string\",\n" +
-//                            "      \"nationalId\": \"string\",\n" +
-//                            "      \"driveCertType\": \"string\",\n" +
-//                            "      \"driveCertNumber\": \"string\",\n" +
-//                            "      \"driveCertIssueDate\": \"string\",\n" +
-//                            "      \"carOwnerName\": \"string\",\n" +
-//                            "      \"address\": \"string\",\n" +
-//                            "      \"phone\": \"string\",\n" +
-//                            "      \"mobile\": \"string\",\n" +
-//                            "      \"damagedParts\": \"string\",\n" +
-//                            "      \"insuranceCompany\": \"string\",\n" +
-//                            "      \"insuranceBranch\": \"string\",\n" +
-//                            "      \"bankName\": \"string\",\n" +
-//                            "      \"bankAccount\": \"string\"\n" +
-//                            "    }\n" +
-//                            "  ],\n" +
-//                            "  \"accidentTime\": \"2020-08-09T10:12:32.765Z\",\n" +
-//                            "  \"accidentAddress\": \"string\",\n" +
-//                            "  \"accidentLat\": 0,\n" +
-//                            "  \"accidentLng\": 0,\n" +
-//                            "  \"accidentDescription\": \"string\",\n" +
-//                            "  \"visitTime\": \"2020-08-09T10:12:32.765Z\",\n" +
-//                            "  \"hasCroquis\": true,\n" +
-//                            "  \"croquisSerial\": \"string\",\n" +
-//                            "  \"announcingType\": \"AndroidApp\",\n" +
-//                            "  \"culSignature\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
-//                            "  \"culInsuranceCode\": \"string\",\n" +
-//                            "  \"culInsuranceStart\": \"2020-08-09T10:12:32.765Z\",\n" +
-//                            "  \"culInsuranceEnd\": \"2020-08-09T10:12:32.765Z\",\n" +
-//                            "  \"culInsuranceCouponCode\": \"2020-08-09T10:12:32.765Z\",\n" +
-//                            "  \"culCarType\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
-//                            "  \"culCarModel\": 0,\n" +
-//                            "  \"culCarColor\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n" +
-//                            "  \"culChassisCode\": \"string\",\n" +
-//                            "  \"culRegPlate\": \"string\",\n" +
-//                            "  \"culMotorCode\": \"string\",\n" +
-//                            "  \"culDriverFName\": \"string\",\n" +
-//                            "  \"culDriverLName\": \"string\",\n" +
-//                            "  \"culDriverFatherName\": \"string\",\n" +
-//                            "  \"culNationalId\": \"string\",\n" +
-//                            "  \"culDriveCertType\": \"string\",\n" +
-//                            "  \"culDriveCertNumber\": \"string\",\n" +
-//                            "  \"culDriveCertIssueDate\": \"string\",\n" +
-//                            "  \"culDriveLimits\": \"string\",\n" +
-//                            "  \"culCoponCode\": \"string\",\n" +
-//                            "  \"culCarOwnerName\": \"string\",\n" +
-//                            "  \"culAddress\": \"string\",\n" +
-//                            "  \"culPhone\": \"string\",\n" +
-//                            "  \"culMobile\": \"string\",\n" +
-//                            "  \"culDamagedParts\": \"string\"\n" +
-//                            "}");
-//                    wr.flush();
-//                    wr.close();
-//                    InputStream inputStream;
-//                    int status = httpURLConnection.getResponseCode();
-//                    if (status != HttpURLConnection.HTTP_OK)  {
-//                        inputStream = httpURLConnection.getErrorStream();
-//                    }
-//                    else  {
-//                        inputStream = httpURLConnection.getInputStream();
-//                    }
-//                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-//                    StringBuilder sb = new StringBuilder();
-//                    while ((line = reader.readLine()) != null) {
-//                        sb.append(line + "\n");
-//                        System.out.println(line);
-//                    }
-//
-//                } catch (MalformedURLException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        };
-//
-//        Thread myThread = new Thread(runnable);
-//        myThread.start();
-//    }
-//
-//    private class LoadDataForActivity extends AsyncTask<Void, Void, Void> {
-//
-//
-//        @Override
-//        protected void onPreExecute() {
-//
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//            myAsyncTak();
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void result) {
-//
-//        }
-//
-//    }
-
-
-
-//    private class RetieveFeedTask extends AsyncTask<Void, Void, Void> {
-//
-//        public Void doInBackground(Void... urls) {
-//            try {
-//                URL url = new URL("https://sarmadportalsrv.sarmadins.ir/api/v1/testPlans"); //Enter URL here
-//                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-//                httpURLConnection.setDoOutput(true);
-//                httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.
-//                httpURLConnection.setRequestProperty("Content-Type", "application/json"); // here you are setting the `Content-Type` for the data you are sending which is `application/json`
-//                httpURLConnection.connect();
-//                String password = "__karGOZAZArPasswordaGt)))666&&sARmadWEb-";
-//                String username = "__KargozarUser**)(sarMad-";
-//                String companyId = "13";
-//                String x = "{Password:\"" + password + "\",Username:\"" + username + "\",RequestPayload:{CompanyID:\"" + companyId + "\"}}}";
-//                System.out.println(x);
-//                DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
-//                wr.writeBytes(x);
-//                wr.flush();
-//                wr.close();
-//                InputStream response = httpURLConnection.getInputStream();
-//                BufferedReader reader = new BufferedReader(new InputStreamReader(response));
-//                StringBuilder sb = new StringBuilder();
-//                int status = httpURLConnection.getResponseCode();
-//                if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-//                    response = httpURLConnection.getInputStream();
-//                } else {
-//                    response = httpURLConnection.getErrorStream();
-//                }
-//                while ((line = reader.readLine()) != null) {
-//                    sb.append(line + "\n");
-//                    System.out.println(line);
-//                }
-//            } catch (MalformedURLException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            Intent intent = new Intent(HomeActivity.this, InsurancesActivity.class);
-//            startActivity(intent);
-//            return null;
-//        }
-//    }
 }
-
-//    Dialog places;
-//    ImageButton AR;
-//    ImageButton Map;
-//    ImageButton AboutUs;
-//
-//    @Override
-//    protected void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//        AR = findViewById(R.id.ar_navigation);
-//        Map = findViewById(R.id.button_map);
-//        AboutUs = findViewById(R.id.button_contact);
-//        AR.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
-//    }

@@ -61,14 +61,6 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
     private int stepsFromDetector = 0;
     private int stepsFromCounter = 0;
 
-    //    private TextView mSrcMessage, mDestMessage, mNavMsg, mNumStepsMsg;
-//    Button mStartNav, mStopNav;
-//    ListView mInstructionListView;
-//    int mDestNum = 0, mSrcNum = 0;
-//    int mDestGroup = 0, mSrcGroup = 0;
-//    int mDir = 0;
-//    int mStepsG1[] = {25, 15, 24, 14}, mStepsG2[] = {7, 25, 4, 24, 3, 20}, mStepsCross = 7;
-//    int mAryPtrSrc, mAryPtrDest;
 
     private int mListenerRegistered = 0;
 
@@ -85,7 +77,6 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
     private int mInstructionNum;
     int index = 0;
     Vibrator v;
-//    Button done;
 
     private String destinationPlace;
 
@@ -96,6 +87,7 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_source_detection);
@@ -141,8 +133,6 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
             e.printStackTrace();
         }
 
-
-        //Reading the Related Path from Directions Json
 
         fragment = (ArFragment)
                 getSupportFragmentManager().findFragmentById(R.id.cam_fragment);
@@ -214,17 +204,17 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
                 Integer key = Integer.valueOf(strings[0]);
                 Integer value = Integer.valueOf(strings[1]);
                 if (mAbsoluteDir == key) {
-                    Toast.makeText(this, "Correct Direction " + key + " : " + numSteps, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "در جهت " + mapDirection(key) + " : " + numSteps, Toast.LENGTH_SHORT).show();
 
                     if (numSteps == value) {
                         numSteps = 0;
                         index++;
                         if (index == myPath.size()) {
-                            Toast.makeText(BasicNavigation.this, "You've reached your destination", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(BasicNavigation.this, "شما به مقصد رسیده اید.", Toast.LENGTH_SHORT).show();
                         } else {
                             String[] strings2 = myPath.get(index).split(" ");
                             Integer key2 = Integer.valueOf(strings2[0]);
-                            Toast.makeText(BasicNavigation.this, "Please Turn" + key2, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(BasicNavigation.this, "لطفا در جهت " + mapDirection(key2) + " قرار بگیرید.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 } else {
@@ -272,13 +262,13 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
                             addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
                         }
                     }
-                    Toast.makeText(BasicNavigation.this, "Wrong direction, Turn" + key, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BasicNavigation.this, "لطفا در جهت " + mapDirection(key) + " قرار بگیرید.", Toast.LENGTH_SHORT).show();
                     numSteps = 0;
                 }
 
 
             } else if (index == myPath.size()) {
-                Toast.makeText(BasicNavigation.this, "You've reached your destination2", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BasicNavigation.this, "شما به مقصد خود رسیده اید", Toast.LENGTH_SHORT).show();
                 if (!sourceFloor.equals(destinationFloor)) {
                     Intent intent = new Intent(BasicNavigation.this, Destination.class);
                     startActivity(intent);
@@ -396,6 +386,18 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
         return mRangeVal;
     }
 
+    public String mapDirection(int key) {
+        if (key == 1)
+            return "شمال";
+        else if (key == 2)
+            return "شرق";
+        else if (key == 3)
+            return "جنوب";
+        else if (key == 4)
+            return "غرب";
+        return "جهت جغرافیایی تشخیص داده نشده است";
+    }
+
     public String loadJSONFromAsset(String address) {
         String json = null;
         try {
@@ -443,27 +445,13 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
                         }
 
                 );
-//        CompletableFuture<Void> renderableFuture =
-//                ModelRenderable.builder()
-//                        .setSource(fragment.getContext(), model)
-//                        .build()
-//                        .thenAccept(renderable -> addNodeToScene(fragment, anchor, renderable))
-//                        .exceptionally((throwable -> {
-//                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                            builder.setMessage(throwable.getMessage())
-//                                    .setTitle("Codelab error!");
-//                            AlertDialog dialog = builder.create();
-//                            dialog.show();
-//                            return null;
-//                        }));
     }
 
     private void addNodeToScene(ArFragment fragment, Anchor anchor, Renderable renderable) {
         AnchorNode anchorNode = new AnchorNode(anchor);
 
-        //Handling Rotaional orientation using Quaternion
+        //Handling Rotational orientation using Quaternion
         TransformableNode node = new TransformableNode(fragment.getTransformationSystem());
-//        node.setLocalRotation(Quaternion.axisAngle(new Vector3(0, 1f, 0), 90f));
 
         node.setRenderable(renderable);
         node.setParent(anchorNode);
@@ -527,5 +515,4 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
         return new android.graphics.Point(vw.getWidth() / 2, vw.getHeight() / 2);
     }
 
-    //----------------------------------------------------------------------------------------------
 }

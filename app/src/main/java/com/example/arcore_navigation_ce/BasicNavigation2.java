@@ -155,11 +155,17 @@ public class BasicNavigation2 extends AppCompatActivity {
         double distanceInMetersOne = meterDistanceBetweenPoints(Float.parseFloat(
                 String.valueOf(user.getLatitude())), Float.parseFloat(String.valueOf(user.getLongitude())),
                 Float.parseFloat(String.valueOf(location.getLatitude())), Float.parseFloat(String.valueOf(location.getLongitude())));
-        if (distanceInMetersOne <= 3.0) {
+        if (j != index_location.size()) {
+            if (distanceInMetersOne <= 3.0) {
+//            Toast.makeText(this, index_instruction.get(j) + "\n" + distanceInMetersOne, Toast.LENGTH_SHORT).show();
+                j++;
+            }
             Toast.makeText(this, index_instruction.get(j) + "\n" + distanceInMetersOne, Toast.LENGTH_SHORT).show();
-            j++;
         }
-        Toast.makeText(this, index_instruction.get(j) + "\n" + distanceInMetersOne, Toast.LENGTH_SHORT).show();
+        else {
+            Toast.makeText(this, "شما به مقصد رسیده اید.", Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 
@@ -236,18 +242,14 @@ public class BasicNavigation2 extends AppCompatActivity {
                             Toast.makeText(fragment.getContext(), "Error:" + throwable.getMessage(), Toast.LENGTH_LONG).show();
                             return null;
                         }
-
                 );
-
     }
 
     private void addNodeToScene(ArFragment fragment, Anchor anchor, Renderable renderable) {
         AnchorNode anchorNode = new AnchorNode(anchor);
-
         //Handling Rotaional orientation using Quaternion
         TransformableNode node = new TransformableNode(fragment.getTransformationSystem());
 //        node.setLocalRotation(Quaternion.axisAngle(new Vector3(0, 1f, 0), 90f));
-
         node.setRenderable(renderable);
         node.setParent(anchorNode);
         fragment.getArSceneView().getScene().addChild(anchorNode);
