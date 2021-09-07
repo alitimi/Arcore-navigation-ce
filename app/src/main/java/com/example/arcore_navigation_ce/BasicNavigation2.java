@@ -79,7 +79,7 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
     ArrayList<String> index_instruction = new ArrayList<>();
     ArrayList<String> index_maneuvers = new ArrayList<>();
 
-    boolean notDoneShape = false;
+    boolean notDoneShape;
 
 
     Runnable runnable;
@@ -173,8 +173,9 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
                                 latitude = gpsTracker.getLatitude();
                                 longitude = gpsTracker.getLongitude();
                                 handler.postDelayed(this, 10000);
+                                startNavigation();
                                 if (index_maneuvers.get(j).equals("depart")) {
-                                    Toast.makeText(BasicNavigation2.this, String.valueOf(mAbsoluteDir), Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(BasicNavigation2.this, String.valueOf(mAbsoluteDir), Toast.LENGTH_SHORT).show();
                                     if (mAbsoluteDir == 2) {
                                         if (index_instruction.get(j).contains("شمال")) {
 //                                    Toast.makeText(BasicNavigation2.this, "depart شمال", Toast.LENGTH_SHORT).show();
@@ -253,10 +254,10 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
                                 }
                                 if (index_maneuvers.get(j).equals("right")) {
                                     Toast.makeText(BasicNavigation2.this, "right", Toast.LENGTH_SHORT).show();
-                                    if (notDoneShape) {
+                                    if (!notDoneShape) {
                                         addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
                                     }
-                                    if (!notDoneShape) {
+                                    if (notDoneShape) {
                                         addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
                                     }
                                 }
@@ -273,7 +274,6 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
                                     Toast.makeText(BasicNavigation2.this, "uturn", Toast.LENGTH_SHORT).show();
                                     addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
                                 }
-                                startNavigation();
                             } else {
                                 gpsTracker.showSettingsAlert();
                             }
@@ -301,11 +301,15 @@ public class BasicNavigation2 extends AppCompatActivity implements SensorEventLi
         double distanceInMetersOne = meterDistanceBetweenPoints(Float.parseFloat(
                 String.valueOf(user.getLatitude())), Float.parseFloat(String.valueOf(user.getLongitude())),
                 Float.parseFloat(String.valueOf(location.getLatitude())), Float.parseFloat(String.valueOf(location.getLongitude())));
-        if (j != index_location.size()) {
+        if (j < index_instruction.size()) {
             if (distanceInMetersOne >= 2.0 && distanceInMetersOne <= 10.0) {
 //            Toast.makeText(this, index_instruction.get(j) + "\n" + distanceInMetersOne, Toast.LENGTH_SHORT).show();
+                notDoneShape = false;
+//                Toast.makeText(this, notDoneShape + "", Toast.LENGTH_SHORT).show();
+                    j++;
+            }
+            else {
                 notDoneShape = true;
-                j++;
             }
             Toast.makeText(this, index_instruction.get(j) + "\n" + Math.round(distanceInMetersOne), Toast.LENGTH_SHORT).show();
         } else {

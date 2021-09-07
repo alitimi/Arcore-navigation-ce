@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         shareIntent.setType("text/plain");
                         shareIntent.putExtra(Intent.EXTRA_SUBJECT, "My application name");
                         String shareMessage = "\nLet me recommend you this application\n\n";
-                        shareMessage = "https://cafebazaar.ir/app/com/sarmad.insurance/?l=fa";
+                        shareMessage = "aliteymourian80.at@gmail.com";
 //                        + BuildConfig.APPLICATION_ID +"\n\n"
                         shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
                         startActivity(Intent.createChooser(shareIntent, "choose one"));
@@ -198,14 +198,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                    Intent intent = new Intent(MainActivity.this, QuestionsActivity.class);
 //                    startActivity(intent);
                 } else if (num == 5) {
-                    sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
-                    SharedPreferences.Editor prefEditor = sharedPreferences.edit();
-                    prefEditor.putString("firstName", null);
-                    prefEditor.putInt("id", 0);
-                    prefEditor.putString("lastName", null);
-                    prefEditor.commit();
-                    name.setText(" ");
-                    sarvar.setText(" ");
+                    finish();
+                    System.exit(0);
                 }
                 // update the main content by replacing fragments
 //                Fragment fragment = getHomeFragment(navItemIndex);

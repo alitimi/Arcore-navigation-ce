@@ -2,7 +2,6 @@ package com.example.arcore_navigation_ce;
 
 public class StepDetector {
 
-
     private static final int ACCELEROMETER_RING_SIZE = 50;
     private static final int VEL_RING_SIZE = 10;
 
@@ -12,17 +11,17 @@ public class StepDetector {
     private static final int STEP_DELAY_NS = 250000000;
 
     private int accelerometerRingCounter = 0;
-    private final float[] accelerometerRingX = new float[ACCELEROMETER_RING_SIZE];
-    private final float[] accelerometerRingY = new float[ACCELEROMETER_RING_SIZE];
-    private final float[] accelerometerRingZ = new float[ACCELEROMETER_RING_SIZE];
+    private float[] accelerometerRingX = new float[ACCELEROMETER_RING_SIZE];
+    private float[] accelerometerRingY = new float[ACCELEROMETER_RING_SIZE];
+    private float[] accelerometerRingZ = new float[ACCELEROMETER_RING_SIZE];
     private int velRingCounter = 0;
-    private final float[] velRing = new float[VEL_RING_SIZE];
+    private float[] velRing = new float[VEL_RING_SIZE];
     private long lastStepTimeNs = 0;
     private float oldVelocityEstimate = 0;
 
-    private com.example.arcore_navigation_ce.StepListener listener;
+    private StepListener listener;
 
-    void registerListener(com.example.arcore_navigation_ce.StepListener listener) {
+    void registerListener(StepListener listener) {
         this.listener = listener;
     }
 
@@ -58,10 +57,9 @@ public class StepDetector {
 
         if (velocityEstimate > STEP_THRESHOLD && oldVelocityEstimate <= STEP_THRESHOLD
                 && (timeNs - lastStepTimeNs > STEP_DELAY_NS)) {
-//            listener.step(timeNs);
+            listener.step(timeNs);
             lastStepTimeNs = timeNs;
         }
         oldVelocityEstimate = velocityEstimate;
     }
-
 }

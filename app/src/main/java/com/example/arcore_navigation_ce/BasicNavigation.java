@@ -40,7 +40,7 @@ import java.util.List;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class BasicNavigation extends AppCompatActivity implements SensorEventListener {
+public class BasicNavigation extends AppCompatActivity implements SensorEventListener, StepListener {
 
     private com.example.arcore_navigation_ce.StepDetector simpleStepDetector;
     private SensorManager sensorManager;
@@ -158,6 +158,8 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
         Sensor stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         simpleStepDetector = new com.example.arcore_navigation_ce.StepDetector();
+        simpleStepDetector.registerListener((StepListener) this);
+
 //        simpleStepDetector.registerListener(this);
         numSteps = 0;
         sensorManager.registerListener(com.example.arcore_navigation_ce.BasicNavigation.this, accelerometer,
@@ -192,91 +194,91 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
             SensorManager.getOrientation(rMat, orientation);
             mAbsoluteDir = (int) (Math.toDegrees(SensorManager.getOrientation(rMat, orientation)[0]) + 360) % 360;
             mAbsoluteDir = getRange(Math.round(mAbsoluteDir));
+
         }
 
 //        Log.e("ALi", "sensor");
-        if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
-            numSteps++;
-            Log.e("ALi", "step" + numSteps);
-            Toast.makeText(BasicNavigation.this, String.valueOf(numSteps), Toast.LENGTH_SHORT).show();
-            if (index < myPath.size()) {
-                String[] strings = myPath.get(index).split(" ");
-                Integer key = Integer.valueOf(strings[0]);
-                Integer value = Integer.valueOf(strings[1]);
-                if (mAbsoluteDir == key) {
-                    Toast.makeText(this, "در جهت " + mapDirection(key) + " : " + numSteps, Toast.LENGTH_SHORT).show();
-
-                    if (numSteps == value) {
-                        numSteps = 0;
-                        index++;
-                        if (index == myPath.size()) {
-                            Toast.makeText(BasicNavigation.this, "شما به مقصد رسیده اید.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            String[] strings2 = myPath.get(index).split(" ");
-                            Integer key2 = Integer.valueOf(strings2[0]);
-                            Toast.makeText(BasicNavigation.this, "لطفا در جهت " + mapDirection(key2) + " قرار بگیرید.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                } else {
-                    if (mAbsoluteDir == 1) {
-                        if (key == 2) {
-                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-                        }
-                        if (key == 3) {
-                            addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
-                        }
-                        if (key == 4) {
-                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-                        }
-                    }
-                    if (mAbsoluteDir == 2) {
-                        if (key == 1) {
-                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-                        }
-                        if (key == 3) {
-                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-                        }
-                        if (key == 4) {
-                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-                        }
-                    }
-                    if (mAbsoluteDir == 3) {
-                        if (key == 1) {
-                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-                        }
-                        if (key == 2) {
-                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-                        }
-                        if (key == 4) {
-                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-                        }
-                    }
-                    if (mAbsoluteDir == 4) {
-                        if (key == 1) {
-                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-                        }
-                        if (key == 2) {
-                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-                        }
-                        if (key == 3) {
-                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-                        }
-                    }
-                    Toast.makeText(BasicNavigation.this, "لطفا در جهت " + mapDirection(key) + " قرار بگیرید.", Toast.LENGTH_SHORT).show();
-                    numSteps = 0;
-                }
-
-
-            } else if (index == myPath.size()) {
-                Toast.makeText(BasicNavigation.this, "شما به مقصد خود رسیده اید", Toast.LENGTH_SHORT).show();
-                if (!sourceFloor.equals(destinationFloor)) {
-                    Intent intent = new Intent(BasicNavigation.this, Destination.class);
-                    startActivity(intent);
-                }
-            }
-            Toast.makeText(com.example.arcore_navigation_ce.BasicNavigation.this, "From Detector : " + numSteps, Toast.LENGTH_SHORT).show();
-        }
-
+//        if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+//            numSteps++;
+////            Log.e("ALi", "step" + numSteps);
+//            Toast.makeText(BasicNavigation.this, String.valueOf(numSteps), Toast.LENGTH_SHORT).show();
+//            if (index < myPath.size()) {
+//                String[] strings = myPath.get(index).split(" ");
+//                Integer key = Integer.valueOf(strings[0]);
+//                Integer value = Integer.valueOf(strings[1]);
+//                if (mAbsoluteDir == key) {
+//                    Toast.makeText(this, "در جهت " + mapDirection(key) + " : " + numSteps, Toast.LENGTH_SHORT).show();
+//
+//                    if (numSteps == value) {
+//                        numSteps = 0;
+//                        index++;
+//                        if (index == myPath.size()) {
+//                            Toast.makeText(BasicNavigation.this, "شما به مقصد رسیده اید.", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            String[] strings2 = myPath.get(index).split(" ");
+//                            Integer key2 = Integer.valueOf(strings2[0]);
+//                            Toast.makeText(BasicNavigation.this, "لطفا در جهت " + mapDirection(key2) + " قرار بگیرید.", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                } else {
+//                    if (mAbsoluteDir == 1) {
+//                        if (key == 2) {
+//                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+//                        }
+//                        if (key == 3) {
+//                            addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+//                        }
+//                        if (key == 4) {
+//                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+//                        }
+//                    }
+//                    if (mAbsoluteDir == 2) {
+//                        if (key == 1) {
+//                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+//                        }
+//                        if (key == 3) {
+//                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+//                        }
+//                        if (key == 4) {
+//                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+//                        }
+//                    }
+//                    if (mAbsoluteDir == 3) {
+//                        if (key == 1) {
+//                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+//                        }
+//                        if (key == 2) {
+//                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+//                        }
+//                        if (key == 4) {
+//                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+//                        }
+//                    }
+//                    if (mAbsoluteDir == 4) {
+//                        if (key == 1) {
+//                            addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+//                        }
+//                        if (key == 2) {
+//                            addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+//                        }
+//                        if (key == 3) {
+//                            addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+//                        }
+//                    }
+//                    Toast.makeText(BasicNavigation.this, "لطفا در جهت " + mapDirection(key) + " قرار بگیرید.", Toast.LENGTH_SHORT).show();
+//                    numSteps = 0;
+//                }
+//
+//
+//            } else if (index == myPath.size()) {
+//                Toast.makeText(BasicNavigation.this, "شما به مقصد خود رسیده اید", Toast.LENGTH_SHORT).show();
+//                if (!sourceFloor.equals(destinationFloor)) {
+//                    Intent intent = new Intent(BasicNavigation.this, Destination.class);
+//                    startActivity(intent);
+//                }
+//            }
+//            Toast.makeText(com.example.arcore_navigation_ce.BasicNavigation.this, "From Detector : " + numSteps, Toast.LENGTH_SHORT).show();
+//        }
 
     }
 
@@ -285,92 +287,94 @@ public class BasicNavigation extends AppCompatActivity implements SensorEventLis
 
     }
 
-//    @RequiresApi(api = Build.VERSION_CODES.N)
-//    @Override
-//    public void step(long timeNs) {
-//        Snackbar snackbar;
-//        int limNumSteps = -1;
-//        if (numSteps == limNumSteps) {
-//            mListenerRegistered = 0;
-//            sensorManager.unregisterListener(BasicNavigation.this);
-//            numSteps = 0;
-//        }
-//
-//        if (index < myPath.size()) {
-//            String[] strings = myPath.get(index).split(" ");
-//            Integer key = Integer.valueOf(strings[0]);
-//            Integer value = Integer.valueOf(strings[1]);
-//            if (mAbsoluteDir == key) {
-//                numSteps++;
-//                Toast.makeText(this, "Correct Direction " + key + " : " + numSteps, Toast.LENGTH_SHORT).show();
-////                addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//
-//                if (numSteps == value) {
-////                    Toast.makeText(BasicNavigation.this, "You walked " + numSteps, Toast.LENGTH_SHORT).show();
-//                    numSteps = 0;
-//                    index++;
-//
-//                    if (index == myPath.size()) {
-//                        Toast.makeText(BasicNavigation.this, "You've reached your destination", Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        String[] strings2 = myPath.get(index).split(" ");
-//                        Integer key2 = Integer.valueOf(strings2[0]);
-//                        Toast.makeText(BasicNavigation.this, "Please Turn" + key2, Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            } else {
-//                if (mAbsoluteDir == 1) {
-//                    if (key == 2) {
-//                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                    }
-//                    if (key == 3) {
-//                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
-//                    }
-//                    if (key == 4) {
-//                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                    }
-//                }
-//                if (mAbsoluteDir == 2) {
-//                    if (key == 1) {
-//                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                    }
-//                    if (key == 3) {
-//                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                    }
-//                    if (key == 4) {
-//                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//                    }
-//                }
-//                if (mAbsoluteDir == 3) {
-//                    if (key == 1) {
-//                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//                    }
-//                    if (key == 2) {
-//                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                    }
-//                    if (key == 4) {
-//                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                    }
-//                }
-//                if (mAbsoluteDir == 4) {
-//                    if (key == 1) {
-//                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
-//                    }
-//                    if (key == 2) {
-//                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
-//                    }
-//                    if (key == 3) {
-//                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
-//                    }
-//                }
-//                Toast.makeText(BasicNavigation.this, "Wrong direction, Turn" + key, Toast.LENGTH_SHORT).show();
-//            }
-//
-//        } else if (index == myPath.size()) {
-//            Toast.makeText(BasicNavigation.this, "You've reached your destination2", Toast.LENGTH_SHORT).show();
-//        }
-//
-//    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void step(long timeNs) {
+        int limNumSteps = -1;
+        if (numSteps == limNumSteps) {
+            mListenerRegistered = 0;
+            sensorManager.unregisterListener(BasicNavigation.this);
+            numSteps = 0;
+        }
+
+        if (index < myPath.size()) {
+            String[] strings = myPath.get(index).split(" ");
+            Integer key = Integer.valueOf(strings[0]);
+            Integer value = Integer.valueOf(strings[1]);
+            if (mAbsoluteDir == key) {
+                numSteps++;
+                    Toast.makeText(this, "در جهت " + mapDirection(key) + " \nتعداد قدم باقیمانده: " + (value - numSteps), Toast.LENGTH_SHORT).show();
+                    addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+
+                if (numSteps == value) {
+//                    Toast.makeText(BasicNavigation.this, "You walked " + numSteps, Toast.LENGTH_SHORT).show();
+                    numSteps = 0;
+                    index++;
+
+                    if (index == myPath.size()) {
+                            Toast.makeText(BasicNavigation.this, "شما به مقصد رسیده اید.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        String[] strings2 = myPath.get(index).split(" ");
+                        Integer key2 = Integer.valueOf(strings2[0]);
+                            Toast.makeText(BasicNavigation.this, "لطفا در جهت " + mapDirection(key2) + " قرار بگیرید.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } else {
+                if (mAbsoluteDir == 1) {
+                    if (key == 2) {
+                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                    }
+                    if (key == 3) {
+                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                    }
+                    if (key == 4) {
+                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                    }
+                }
+                if (mAbsoluteDir == 2) {
+                    if (key == 1) {
+                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                    }
+                    if (key == 3) {
+                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                    }
+                    if (key == 4) {
+                        addObject(Uri.parse("Arrow_straight_Zneg.sfb"));
+                    }
+
+                }
+                if (mAbsoluteDir == 3) {
+                    if (key == 1) {
+                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                    }
+                    if (key == 2) {
+                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                    }
+                    if (key == 4) {
+                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                    }
+
+                }
+                if (mAbsoluteDir == 4) {
+                    if (key == 1) {
+                        addObject(Uri.parse("Arrow_Right_Zneg.sfb"));
+                    }
+                    if (key == 2) {
+                        addObject(Uri.parse("Arrow_straight_Zpos.sfb"));
+                    }
+                    if (key == 3) {
+                        addObject(Uri.parse("Arrow_Left_Zneg.sfb"));
+                    }
+
+                }
+                    Toast.makeText(BasicNavigation.this, "لطفا در جهت " + mapDirection(key) + " قرار بگیرید.", Toast.LENGTH_SHORT).show();
+            }
+
+        } else if (index == myPath.size()) {
+            Toast.makeText(BasicNavigation.this, "پایان مسیر", Toast.LENGTH_SHORT).show();
+        }
+
+    }
 
 
     public int getRange(int degree) {
