@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ArNavigate" />
-
+        <activity android:name=".QuestionsActivity"/>
         <activity android:name=".SourceDetection" />
         <activity android:name="com.example.arcore_navigation_ce.Destination" />
         <activity android:name="com.example.arcore_navigation_ce.GetLocation" />

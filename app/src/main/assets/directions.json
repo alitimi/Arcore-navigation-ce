@@ -119,17 +119,7 @@
           "4": 10
         }
       ],
-      "Elevator1_Class201_1": [
-        {
-          "4": 12
-        }
-      ],
-      "Elevator1_Class202_1": [
-        {
-          "4": 21
-        }
-      ],
-      "Elevator1_WomenWC_1": [
+      "Elevator1_WomenWC1": [
         {
           "4": 6
         },
@@ -137,15 +127,60 @@
           "1": 2
         }
       ],
-      "Elevator2_OfficeFarbeh2": [
+      "EduBsc1_Elevator1": [
         {
-          "2" : 5
+          "2": 10
+        }
+      ],
+      "EduBsc1_WomenWC1": [
+        {
+          "2": 8
         },
         {
-          "3" : 7
+          "1": 4
+        }
+      ],
+      "WomenWc1_Elevator1": [
+        {
+          "2": 12
         },
         {
-          "4" : 3
+          "3": 3
+        }
+      ],
+      "WomenWc1_EduBsc1": [
+        {
+          "3": 5
+        },
+        {
+          "4": 8
+        }
+      ],
+      "Elevator2_MenWC2": [
+        {
+          "4": 6
+        },
+        {
+          "1": 2
+        }
+      ],
+      "MenWC2_Elevator2" : [
+        {
+          "2" : 12
+        },
+        {
+          "3" : 3
+        }
+      ],
+      "Elevator3_OfficeFarbeh3": [
+        {
+          "2": 5
+        },
+        {
+          "3": 7
+        },
+        {
+          "4": 3
         }
       ]
     }

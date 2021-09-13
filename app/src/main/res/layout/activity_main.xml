@@ -186,28 +186,28 @@
             android:clipToPadding="false"
             android:layoutDirection="ltr">
 
-            <ImageButton
-                android:src="@drawable/button_contact"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:maxWidth="60dp"
-                android:maxHeight="30dp"
-                android:id="@+id/button_contact"
-                android:background="@null"/>
+<!--            <ImageButton-->
+<!--                android:src="@drawable/button_contact"-->
+<!--                android:layout_width="60dp"-->
+<!--                android:layout_height="30dp"-->
+<!--                android:adjustViewBounds="true"-->
+<!--                android:scaleType="fitXY"-->
+<!--                android:maxWidth="60dp"-->
+<!--                android:maxHeight="30dp"-->
+<!--                android:id="@+id/button_contact"-->
+<!--                android:background="@null"/>-->
 
-            <ImageButton
-                android:src="@drawable/button_map"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:maxWidth="60dp"
-                android:maxHeight="30dp"
-                android:id="@+id/button_map"
-                android:layout_marginStart="8dp"
-                android:background="@null"/>
+<!--            <ImageButton-->
+<!--                android:src="@drawable/button_map"-->
+<!--                android:layout_width="60dp"-->
+<!--                android:layout_height="30dp"-->
+<!--                android:adjustViewBounds="true"-->
+<!--                android:scaleType="fitXY"-->
+<!--                android:maxWidth="60dp"-->
+<!--                android:maxHeight="30dp"-->
+<!--                android:id="@+id/button_map"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:background="@null"/>-->
             <!--            app:MvxBind="Click ShowMap"-->
         </LinearLayout>
     </LinearLayout>

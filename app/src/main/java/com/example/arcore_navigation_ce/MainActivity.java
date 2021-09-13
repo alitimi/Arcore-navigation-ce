@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -63,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Window window = this.getWindow();
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.lightBlue));
         Bundle extras = getIntent().getExtras();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -195,8 +199,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                    Intent intent = new Intent(MainActivity.this, ContactUsActivity.class);
 //                    startActivity(intent);
                 } else if (num == 4) {
-//                    Intent intent = new Intent(MainActivity.this, QuestionsActivity.class);
-//                    startActivity(intent);
+                    Intent intent = new Intent(MainActivity.this, QuestionsActivity.class);
+                    startActivity(intent);
                 } else if (num == 5) {
                     finish();
                     System.exit(0);
