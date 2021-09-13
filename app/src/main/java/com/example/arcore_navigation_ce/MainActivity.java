@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         test = findViewById(R.id.ar1_navigation);
         name = findViewById(R.id.policyholderDisplayName);
         sarvar = findViewById(R.id.textView3);
-        contact = findViewById(R.id.button_contact);
-        map = findViewById(R.id.button_map);
+//        contact = findViewById(R.id.button_contact);
+//        map = findViewById(R.id.button_map);
         header = findViewById(R.id.image_hero);
         sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
         number = sharedPreferences.getInt("id", 0);
@@ -136,21 +136,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
 
-        contact.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+//        contact.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
 //                    Intent intent = new Intent(HomeActivity.this, ContactUsActivity.class);
 //                    startActivity(intent);
             }
-        });
-        map.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+//        });
+//        map.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
 //                    Intent intent = new Intent(HomeActivity.this, MapActivity.class);
 //                    startActivity(intent);
-            }
-        });
-    }
+//            }
+//        });
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     case R.id.nav_questions:
                         navItemIndex = 4;
-                        CURRENT_TAG = TAG_Share;
+                        CURRENT_TAG = TAG_Questions;
                         break;
                     case R.id.nav_logout:
                         navItemIndex = 5;

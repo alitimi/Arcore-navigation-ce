@@ -1,29 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        android:layout_height="630dp"
+        android:layout_height="100dp"
         android:layout_width="match_parent"
         android:fitsSystemWindows="true"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-
         android:minHeight="?attr/actionBarSize"
+        android:background="@color/colorPrimaryDark"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:elevation="0dp"
         app:contentInsetStartWithNavigation="0dp" >
 
         <TextView
-            android:text="@string/help"
+            android:text="سوالات متداول"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/ic_launcher_background"
             android:textSize="17dp"
             android:layout_marginRight="15dp"
             android:gravity="center|center_vertical"
@@ -33,6 +30,20 @@
             android:layout_marginTop="10dp" />
 
     </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="17dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:gravity="center"
+        android:id="@+id/layout1"
+        android:layout_marginVertical="0dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp" />
+    <!--        android:text="@string/help"-->
 
 
 </LinearLayout>
