@@ -36,5 +36,6 @@ public class QuestionsActivity extends AppCompatActivity {
                 "        \n" +
                 "4.\tبرنامه شروع به مسیریابی می\u200Cکند و تا مقصد شما را راهنمایی می\u200Cکند.");
 
+
     }
 }
