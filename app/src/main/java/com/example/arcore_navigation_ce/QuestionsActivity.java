@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat;
 
 public class QuestionsActivity extends AppCompatActivity {
 
+
     TextView text;
 
     @Override
@@ -35,7 +36,6 @@ public class QuestionsActivity extends AppCompatActivity {
                 "3.\tحال نزدیک\u200Cترین QRCode را که مشاهده می\u200Cکنید اسکن کنید.\n" +
                 "        \n" +
                 "4.\tبرنامه شروع به مسیریابی می\u200Cکند و تا مقصد شما را راهنمایی می\u200Cکند.");
-
 
     }
 }
